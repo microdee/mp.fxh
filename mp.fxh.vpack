@@ -1,0 +1,12 @@
+{
+	"Name": "mp.fxh",
+	"Author": "microdee",
+	"VVVVersion": "32",
+	"AddonPack": "false",
+	"Install": [
+		{"CopyThisPack": []}
+	],
+	"Uninstall": [
+		{"RemovePack": []}
+	]
+}
