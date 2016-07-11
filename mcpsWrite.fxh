@@ -1,8 +1,8 @@
 #if !defined(RWBYTEADDRESSBUFFERUTILS_FXH)
-#include "../../../mp.fxh/RWByteAddressBufferUtils.fxh"
+#include <packs/mp.fxh/RWByteAddressBufferUtils.fxh>
 #endif
 #if !defined(MCPSWORLD_FXH)
-#include "../../../mp.fxh/mcpsWorld.fxh"
+#include <packs/mp.fxh/mcpsWorld.fxh>
 #endif
 
 StructuredBuffer<uint> EmitOffset : PS_EMITTEROFFSET;

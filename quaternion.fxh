@@ -1,8 +1,8 @@
 #if !defined(STDMATH_FXH)
-#include "../../../mp.fxh/stdmath.fxh"
+#include <packs/mp.fxh/stdmath.fxh>
 #endif
 #if !defined(POWS_FXH)
-#include "../../../mp.fxh/pows.fxh"
+#include <packs/mp.fxh/pows.fxh>
 #endif
 
 #if !defined(PI)

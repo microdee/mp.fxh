@@ -1,8 +1,8 @@
 #if !defined(BYTEADDRESSBUFFERUTILS_FXH)
-#include "../../../mp.fxh/ByteAddressBufferUtils.fxh"
+#include <packs/mp.fxh/ByteAddressBufferUtils.fxh>
 #endif
 #if !defined(MCPSWORLD_FXH)
-#include "../../../mp.fxh/mcpsWorld.fxh"
+#include <packs/mp.fxh/mcpsWorld.fxh>
 #endif
 
 float3 mcpsPositionLoad(ByteAddressBuffer mcpsb, uint i) { return BABLoad3(mcpsb, i*PELSIZE); }

@@ -3,13 +3,13 @@
 // define DOSHADOWS in vvvv for shadows
 
 #if !defined(LIGHTSTRUCTS_FXH)
-#include "../../../mp.fxh/LightStructs.fxh"
+#include <packs/mp.fxh/LightStructs.fxh>
 #endif
 #if !defined(POISSONDISC_FXH)
-#include "../../../mp.fxh/PoissonDisc.fxh"
+#include <packs/mp.fxh/PoissonDisc.fxh>
 #endif
 #if !defined(PANOTOOLS_FXH)
-#include "../../../mp.fxh/PanoTools.fxh"
+#include <packs/mp.fxh/PanoTools.fxh>
 #endif
 
 struct Components

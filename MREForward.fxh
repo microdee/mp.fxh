@@ -2,13 +2,13 @@
 #define MREFORWARD_FXH 1
 
 #if !defined(POWS_FXH)
-#include "../../../mp.fxh/pows.fxh"
+#include <packs/mp.fxh/pows.fxh>
 #endif
 #if !defined(BITWISE_FXH)
-#include "../../../mp.fxh/bitwise.fxh"
+#include <packs/mp.fxh/bitwise.fxh>
 #endif
 #if !defined(INSTANCEPARAMS_FXH)
-#include "../../../mp.fxh/InstanceParams.fxh"
+#include <packs/mp.fxh/InstanceParams.fxh>
 #endif
 
 /*

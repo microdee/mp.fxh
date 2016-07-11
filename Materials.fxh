@@ -1,7 +1,7 @@
 #define MATERIALS_FXH 1
 
 #if !defined(MATERIALFEATURES_FXH)
-#include "../../../mp.fxh/MaterialFeatures.fxh"
+#include <packs/mp.fxh/MaterialFeatures.fxh>
 #endif
 
 // Resources:
