@@ -1,7 +1,19 @@
 #define DFPRIMITIVES_FXH
+// combining stuff from IQ http://www.iquilezles.org/www/articles/distfunctions/distfunctions.htm
+// and http://mercury.sexy/hg_sdf/
 
 #if !defined(POWS_FXH)
 #include <packs/mp.fxh/pows.fxh>
+#endif
+#if !defined(MINMAX_FXH)
+#include <packs/mp.fxh/minmax.fxh>
+#endif
+
+#if !defined(PI)
+#define PI 3.14159265
+#endif
+#if !defined(PHI)
+#define PHI (sqrt(5)*0.5 + 0.5)
 #endif
 // utilities
 float dot2( float3 v ) { return dot(v,v); }
@@ -14,16 +26,31 @@ float sSphere(float3 p, float r) {return length(p)-r;}
 float sSphere(float3 p, float r, float n) {return lengthn(p,n)-r;}
 float sCylinder(float3 p, float3 c) {return length(p.xz-c.xy)-c.z;}
 float sCylinder(float3 p, float3 c, float n) {return lengthn(p.xz-c.xy,n)-c.z;}
-float sPlane(float3 p, float4 n)
+
+float sPlane(float3 p, float3 n, float d)
 {
-	float4 nn = normalize(n);
-	return dot(p,n.xyz) + n.w;
+	float3 nn = normalize(n);
+	return dot(p,n) + d;
 }
+
 float sBox(float3 p, float3 b)
 {
 	float3 d = abs(p) - b;
 	return min(max(d.x,max(d.y,d.z)),0.0) + length(max(d,0.0));
 }
+// Cheap Box: distance to corners is overestimated
+float uBoxCheap(float3 p, float3 b) {
+	return vmax(abs(p) - b);
+}
+// Same as above, but in two dimensions (an endless box)
+float uBox2Cheap(float2 p, float2 b) {
+	return vmax(abs(p)-b);
+}
+float uBox2(float2 p, float2 b) {
+	float2 d = abs(p) - b;
+	return length(max(d, 0)) + vmax(min(d, 0));
+}
+
 float sEllipsoid( float3 p, float3 r )
 {
     return (length( p/r ) - 1.0) * min(min(r.x,r.y),r.z);
@@ -89,6 +116,21 @@ float sCappedCone( float3 p, float3 c )
     float2 d = max(qv,0.0)*qv/vv;
     return sqrt( dot(w,w) - max(d.x,d.y) )* sign(max(q.y*v.x-q.x*v.y,w.y));
 }
+
+// Blobby ball object. You've probably seen it somewhere. This is not a correct distance bound, beware.
+float sBlob(float3 p) {
+	p = abs(p);
+	if (p.x < max(p.y, p.z)) p = p.yzx;
+	if (p.x < max(p.y, p.z)) p = p.yzx;
+	float b = max(max(max(
+		dot(p, normalize(float3(1, 1, 1))),
+		dot(p.xz, normalize(float2(PHI+1, 1)))),
+		dot(p.yx, normalize(float2(1, PHI)))),
+		dot(p.xz, normalize(float2(1, PHI))));
+	float l = length(p);
+	return l - 1.5 - 0.2 * (1.5 / 2)* cos(min(sqrt(1.01 - b / l)*(PI / 0.25), PI));
+}
+
 float uTriangle( float3 p, float3 a, float3 b, float3 c )
 {
     float3 ba = b - a; float3 pa = p - a;
