@@ -23,6 +23,24 @@ will select the distance component from your return type. example:
 #define DFGETDISTANCE .y
 
 obviously your implementing class should also reflect the same declaration.
+example:
+
+#define DFARGSDEF ,float param
+#define DFARGSPASS ,param
+#define DFRETURNTYPE float4
+#define DFGETDISTANCE .y
+#include <packs/mp.fxh/DFUtils.fxh>
+
+class cDF : iDF
+{
+    DFRETURNTYPE df(float3 p DFARGSDEF)
+    {
+        // my scene goes here
+        return float4(...);
+    }
+};
+
+cDF map;
 */
 
 #if !defined(DFARGSDEF)
