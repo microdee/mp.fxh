@@ -1,5 +1,5 @@
 #if !defined(STDMATH_FXH)
-#include <packs/mp.fxh/stdmath.fxh>
+#include <packs/mp.fxh/copysign.fxh>
 #endif
 #if !defined(POWS_FXH)
 #include <packs/mp.fxh/pows.fxh>
@@ -38,8 +38,7 @@ float4x4 qrot(float4 q)
     };
 	return mul(m1, m2);
 }
-
-float4 m2q(float4x4 m)
+float4 m2q(float3x3 m)
 {
     float4 q = float4(0,0,0,1);
     q.w = sqrt( max( 0, 1 + m[0][0] + m[1][1] + m[2][2] ) ) / 2;
@@ -49,8 +48,20 @@ float4 m2q(float4x4 m)
     q.x = copysign( q.x, m[1][2] - m[2][1] );
     q.y = copysign( q.y, m[2][0] - m[0][2] );
     q.z = copysign( q.z, m[0][1] - m[1][0] );
-    return q;
+    return normalize(q);
 }
+/*
+float4 m2q(float3x3 m)
+{
+    m = transpose(m);
+    float W = sqrt(1.0 + m[0][0] + m[1][1] + m[2][2]) / 2;
+    float4 q = float4(0,0,0,W);
+    q.x = (m[1][2] - m[2][1]) / (4*W);
+    q.y = (m[2][0] - m[0][2]) / (4*W);
+    q.z = (m[0][1] - m[1][0]) / (4*W);
+    return normalize(q);
+}
+*/
 
 float4 aa2q(float3 a, float r)
 {
