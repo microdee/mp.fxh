@@ -42,6 +42,31 @@ float4 DiscSample(
 }
 
 float4 DiscSample(
+		Texture2D envtex,
+		SamplerState ss,
+		float3 dir,
+		float blur,
+		float maxmiplevel)
+{
+	float4 col = envtex.SampleLevel(ss, DirToUV(dir), 0);
+	if(blur < 0.0001)
+		return col;
+	else
+	{
+		col = 0;
+		float sampcount = DISCSAMPLES;
+		for(float i=0; i<DISCSAMPLES; i++)
+		{
+			float tt = (i/sampcount) * PI * 2;
+			float3 discray = PoissonDiscDir(dir, tt, blur);
+			float lod = lerp(0, maxmiplevel, pow(blur, 0.25));
+			col += envtex.SampleLevel(ss, DirToUV(discray), lod) / sampcount;
+		}
+		return col;
+	}
+}
+
+float4 DiscSample(
 		Texture2DArray envtex,
 		SamplerState ss,
 		float3 dir,
