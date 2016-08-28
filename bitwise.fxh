@@ -1,19 +1,18 @@
 #define BITWISE_FXH 1
 
-float Join(float a, float b)
+uint Join(float a, float b)
 {
 	uint ab = f32tof16(a);
 	uint bb = f32tof16(b);
 	bb = bb << 16;
-	uint ret = ab | bb;
-	return asfloat(ret);
+	return ab | bb;
 }
 
-float2 Split(float a)
+float2 Split(uint a)
 {
 	uint2 ret = 0;
-	ret.x = f16tof32(asuint(a));
-	ret.y = f16tof32(asuint(a) >> 16);
+	ret.x = f16tof32(a);
+	ret.y = f16tof32(a >> 16);
 	return asfloat(ret);
 }
 
@@ -24,7 +23,7 @@ uint Join(uint a, uint b)
 	return ab | bb;
 }
 
-uint2 Split(uint a)
+uint2 SplitUint(uint a)
 {
 	uint2 ret = 0;
 	ret.x = 0x0000FFFF & a;
