@@ -268,10 +268,10 @@ float UStairs(float a, float b, float r, float n) {
 }
 // We can just call Union since stairs are symmetric.
 float IStairs(float a, float b, float r, float n) {
-	return -fOpUnionStairs(-a, -b, r, n);
+	return -UStairs(-a, -b, r, n);
 }
 float SStairs(float a, float b, float r, float n) {
-	return -fOpUnionStairs(-a, b, r, n);
+	return -UStairs(-a, b, r, n);
 }
 
 // Similar to fOpUnionRound, but more lipschitz-y at acute angles
