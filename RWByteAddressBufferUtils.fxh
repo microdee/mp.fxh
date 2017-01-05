@@ -13,7 +13,7 @@ float4x4 RWBABLoad4x4(RWByteAddressBuffer bab, uint ii)
         [unroll]
         for(uint j=0; j<4; j++)
         {
-            tmp[i][j] = asfloat(bab.Load( ii*4 + i*16 + j*4 ));
+            tmp[i][j] = asfloat(bab.Load( ii*64 + i*16 + j*4 ));
         }
     }
     return tmp;
@@ -31,7 +31,34 @@ void RWBABStore4x4(RWByteAddressBuffer bab, uint ii, float4x4 src)
         [unroll]
         for(uint j=0; j<4; j++)
         {
-            bab.Store( ii*4 + i*16 + j*4, asuint(src[i][j]));
+            bab.Store( ii*64 + i*16 + j*4, asuint(src[i][j]));
         }
     }
+}
+void InterlockedAddFloat(RWByteAddressBuffer bab, uint addr, float value)
+{
+    uint comp,orig = bab.Load(addr);
+    [allow_uav_condition]do
+    {
+        bab.InterlockedCompareExchange(addr, comp = orig, asuint(asfloat(orig) + value), orig);
+    }
+    while(orig != comp);
+}
+void InterlockedAddFloat(RWByteAddressBuffer bab, uint addr, float2 value)
+{
+    InterlockedAddFloat(bab, addr + 0, value.x);
+    InterlockedAddFloat(bab, addr + 4, value.y);
+}
+void InterlockedAddFloat(RWByteAddressBuffer bab, uint addr, float3 value)
+{
+    InterlockedAddFloat(bab, addr + 0, value.x);
+    InterlockedAddFloat(bab, addr + 4, value.y);
+    InterlockedAddFloat(bab, addr + 8, value.z);
+}
+void InterlockedAddFloat(RWByteAddressBuffer bab, uint addr, float4 value)
+{
+    InterlockedAddFloat(bab, addr + 0, value.x);
+    InterlockedAddFloat(bab, addr + 4, value.y);
+    InterlockedAddFloat(bab, addr + 8, value.z);
+    InterlockedAddFloat(bab, addr + 12, value.w);
 }

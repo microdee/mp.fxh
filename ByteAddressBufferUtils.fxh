@@ -13,7 +13,7 @@ float4x4 BABLoad4x4(ByteAddressBuffer bab, uint ii)
         [unroll]
         for(uint j=0; j<4; j++)
         {
-            tmp[i][j] = asfloat(bab.Load( ii*4 + i*16 + j*4 ));
+            tmp[i][j] = asfloat(bab.Load( ii*64 + i*16 + j*4 ));
         }
     }
     return tmp;
