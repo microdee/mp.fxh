@@ -1,10 +1,11 @@
+#if !defined(DFUTILS_FXH)
 #define DFUTILS_FXH
 
 /* interface for distance function
 implement this interface in a class where you actually do your distance field
 so you can use these utilities.
 
-Also behold this hacky generalizatin
+Also behold this hacky generalization
 if you have additional arguments for your distance function other than the
 position, you have to define them with DFARGSDEF and DFARGSPASS before
 including DFUtils.fxh like this:
@@ -90,3 +91,4 @@ float NaiveEdge( float3 p, float3 norm, float ew, float nw, iDF idf DFARGSDEF)
 	float e = -(dot(nx, norm)-1)-(dot(ny, norm)-1)-(dot(nz, norm)-1);
 	return saturate(abs(e));
 }
+#endif

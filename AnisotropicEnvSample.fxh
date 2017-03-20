@@ -1,9 +1,11 @@
+#if !defined(ANISOTROPICENVSAMPLE_FXH)
 #define ANISOTROPICENVSAMPLE_FXH
 
-#if !defined(PANOTOOLS_FXH)
+#if defined(__INTELLISENSE__)
+#include <PanoTools.fxh>
+#include <minmax.fxh>
+#else
 #include <packs/mp.fxh/PanoTools.fxh>
-#endif
-#if !defined(MINMAX_FXH)
 #include <packs/mp.fxh/minmax.fxh>
 #endif
 
@@ -65,3 +67,4 @@ float4 AnisotropicSample(
 		return col / wg;
 	}
 }
+#endif

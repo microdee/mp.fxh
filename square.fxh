@@ -1,5 +1,21 @@
 #define SQUARE_FXH
 
+float sqr(float x)
+{
+    return x * x;
+}
+float2 sqr(float2 x)
+{
+    return x * x;
+}
+float3 sqr(float3 x)
+{
+    return x * x;
+}
+float4 sqr(float4 x)
+{
+    return x * x;
+}
 float square (float x) {
 	return x*x;
 }

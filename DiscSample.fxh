@@ -1,9 +1,11 @@
+#if !defined(DISCSAMPLE_FXH)
 #define DISCSAMPLE_FXH 1
 
-#if !defined(POISSONDISC_FXH)
+#if defined(__INTELLISENSE__)
+#include <PoissonDisc.fxh>
+#include <PanoTools.fxh>
+#else
 #include <packs/mp.fxh/PoissonDisc.fxh>
-#endif
-#if !defined(PANOTOOLS_FXH)
 #include <packs/mp.fxh/PanoTools.fxh>
 #endif
 
@@ -89,3 +91,4 @@ float4 DiscSample(
 		return col;
 	}
 }
+#endif

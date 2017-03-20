@@ -1,3 +1,4 @@
+#if !defined(BYTEADDRESSBUFFERUTILS_FXH)
 #define BYTEADDRESSBUFFERUTILS_FXH
 
 float BABLoad(ByteAddressBuffer bab, uint i) {return asfloat(bab.Load( i*4 ));}
@@ -18,3 +19,4 @@ float4x4 BABLoad4x4(ByteAddressBuffer bab, uint ii)
     }
     return tmp;
 }
+#endif

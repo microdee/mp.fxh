@@ -1,14 +1,15 @@
+#if !defined(LIGHTUTILS_FXH)
 #define LIGHTUTILS_FXH 1
 
 // define DOSHADOWS in vvvv for shadows
 
-#if !defined(LIGHTSTRUCTS_FXH)
+#if defined(__INTELLISENSE__)
+#include <LightStructs.fxh>
+#include <PoissonDisc.fxh>
+#include <PanoTools.fxh>
+#else
 #include <packs/mp.fxh/LightStructs.fxh>
-#endif
-#if !defined(POISSONDISC_FXH)
 #include <packs/mp.fxh/PoissonDisc.fxh>
-#endif
-#if !defined(PANOTOOLS_FXH)
 #include <packs/mp.fxh/PanoTools.fxh>
 #endif
 
@@ -197,3 +198,4 @@ float SpotShadows(
 	
     return saturate(pow(smoothstep(0,1,res),ShadGamma));
 }
+#endif

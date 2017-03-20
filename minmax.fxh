@@ -1,3 +1,4 @@
+#if !defined(MINMAX_FXH)
 #define MINMAX_FXH
 
 float vmax(float2 v) {
@@ -18,3 +19,4 @@ float vmin(float3 v) {
 float vmin(float4 v) {
 	return min(min(v.x, v.y), min(v.z, v.w));
 }
+#endif

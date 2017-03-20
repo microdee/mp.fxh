@@ -1,3 +1,4 @@
+#if !defined(RWBYTEADDRESSBUFFERUTILS_FXH)
 #define RWBYTEADDRESSBUFFERUTILS_FXH
 
 float RWBABLoad(RWByteAddressBuffer bab, uint i) { return asfloat(bab.Load( i*4 )); }
@@ -62,3 +63,4 @@ void InterlockedAddFloat(RWByteAddressBuffer bab, uint addr, float4 value)
     InterlockedAddFloat(bab, addr + 8, value.z);
     InterlockedAddFloat(bab, addr + 12, value.w);
 }
+#endif

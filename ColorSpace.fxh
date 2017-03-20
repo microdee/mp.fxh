@@ -1,4 +1,6 @@
 /*good piece of code by Ian Taylor (from http://www.chilliant.com/rgb2hsv.html)*/
+#if !defined(COLORSPACE_FXH)
+#define COLORSPACE_FXH 1
 
 float3 HUEtoRGB(in float H){
 	H=frac(H);
@@ -52,3 +54,4 @@ float3 RGBtoHSL(in float3 RGB){
 	}
 	return HSL;
 }
+#endif

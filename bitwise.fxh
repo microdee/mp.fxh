@@ -1,3 +1,4 @@
+#if !defined(BITWISE_FXH)
 #define BITWISE_FXH 1
 
 uint Join(float a, float b)
@@ -45,3 +46,4 @@ uint2 SplitHalf(uint a)
 	ret.y = 0x000000FF & (a >> 8);
 	return ret;
 }
+#endif

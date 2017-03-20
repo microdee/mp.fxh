@@ -1,3 +1,4 @@
+#if !defined(DFGENPRIMITIVES_FXH)
 #define DFGENPRIMITIVES_FXH
 
 // from http://mercury.sexy/hg_sdf/
@@ -86,3 +87,4 @@ float gTruncatedOctahedron(float3 p, float r) {
 float gTruncatedIcosahedron(float3 p, float r) {
 	return fGDF(p, r, 3, 18);
 }
+#endif

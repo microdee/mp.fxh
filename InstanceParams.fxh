@@ -1,4 +1,4 @@
-
+#if !defined(INSTANCEPARAMS_FXH)
 #define INSTANCEPARAMS_FXH 1
 
 struct InstanceParams
@@ -14,3 +14,4 @@ struct InstanceParams
 	uint ObjID0;
 	uint ObjID1;
 };
+#endif

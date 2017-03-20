@@ -1,3 +1,4 @@
+#if !defined(PLASMANOISE_FXH)
 #define PLASMANOISE_FXH
 
 #define MINTWOPI -6.283185307179586476925286766559
@@ -22,3 +23,4 @@ float3 distort(float3 inpos, float4x4 Transform, float saturation, float freq[22
     c=sin(c*freq[21]);
     return normalize(c);
 }
+#endif

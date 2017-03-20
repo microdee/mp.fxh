@@ -1,3 +1,4 @@
+#if !defined(CSTHREADDEFINES_FXH)
 #define CSTHREADDEFINES_FXH
 
 #if !defined(XTHREADS)
@@ -8,4 +9,6 @@
 #endif
 #if !defined(ZTHREADS)
 #define ZTHREADS 1
+#endif
+
 #endif

@@ -1,3 +1,4 @@
+#if !defined(SAFESIGN_FXH)
 #define SAFESIGN_FXH
 
 float sgn(float x) {
@@ -12,3 +13,4 @@ float3 sgn(float3 v) {
 float4 sgn(float4 v) {
 	return float4((v.x<0)?-1:1, (v.y<0)?-1:1, (v.z<0)?-1:1, (v.w<0)?-1:1);
 }
+#endif

@@ -1,8 +1,10 @@
 #define MREFORWARDPS_FXH
 
-//#include "../fxh/ColorSpace.fxh>
-
-// include MREForward.fxh before including this
+#if defined(__INTELLISENSE__)
+#include <MREForward.fxh>
+#else
+#include <packs/mp.fxh/MREForward.fxh>
+#endif
 
 // declare outside:
 // StructuredBuffer<InstanceParams> InstancedParams : FR_INSTANCEDPARAMS;

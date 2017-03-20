@@ -1,11 +1,13 @@
+#if !defined(DFPRIMITIVES_FXH)
 #define DFPRIMITIVES_FXH
 // combining stuff from IQ http://www.iquilezles.org/www/articles/distfunctions/distfunctions.htm
 // and http://mercury.sexy/hg_sdf/
 
-#if !defined(POWS_FXH)
+#if defined(__INTELLISENSE__)
+#include <pows.fxh>
+#include <minmax.fxh>
+#else
 #include <packs/mp.fxh/pows.fxh>
-#endif
-#if !defined(MINMAX_FXH)
 #include <packs/mp.fxh/minmax.fxh>
 #endif
 
@@ -177,3 +179,4 @@ float uQuad( float3 p, float3 a, float3 b, float3 c, float3 d )
 float uQuad(float3 p, float4x4 v) { return uQuad(p, v[0].xyz, v[1].xyz, v[2].xyz, v[3].xyz); }
 float uQuad(float3 p, float4x3 v) { return uQuad(p, v[0], v[1], v[2], v[3]); }
 float uQuad(float3 p, float3 v[4]) { return uQuad(p, v[0], v[1], v[2], v[3]); }
+#endif

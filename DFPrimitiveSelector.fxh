@@ -1,6 +1,9 @@
+#if !defined(DFPRIMITIVESELECTOR_FXH)
 #define DFPRIMITIVESELECTOR_FXH
 
-#if !defined(DFPRIMITIVES_FXH)
+#if defined(__INTELLISENSE__)
+#include <DFPrimitives.fxh>
+#else
 #include <packs/mp.fxh/DFPrimitives.fxh>
 #endif
 
@@ -133,17 +136,30 @@ float PCapsuleN(float3 p, uint PropAddress, StructuredBuffer<float> Prop)
 float Primitive(float3 p, uint Select, uint PropAddress, StructuredBuffer<float> Prop)
 {
 	float res = 0;
-	if(Select==0) res = PSphere(p, PropAddress);
-	if(Select==1) res = PSphereN(p, PropAddress);
-	if(Select==2) res = PCylinder(p, PropAddress);
-	if(Select==3) res = PCylinderN(p, PropAddress);
-	if(Select==4) res = PPlane(p, PropAddress);
-	if(Select==5) res = PBox(p, PropAddress);
-	if(Select==6) res = PTorus(p, PropAddress);
-	if(Select==7) res = PTorusN(p, PropAddress);
-	if(Select==8) res = PCone(p, PropAddress);
-	if(Select==9) res = PConeN(p, PropAddress);
-	if(Select==10) res = PCapsule(p, PropAddress);
-	if(Select==11) res = PCapsuleN(p, PropAddress);
+	if(Select == 0)
+        res = PSphere(p, PropAddress, Prop);
+    if (Select == 1)
+        res = PSphereN(p, PropAddress, Prop);
+    if (Select == 2)
+        res = PCylinder(p, PropAddress, Prop);
+    if (Select == 3)
+        res = PCylinderN(p, PropAddress, Prop);
+    if (Select == 4)
+        res = PPlane(p, PropAddress, Prop);
+    if (Select == 5)
+        res = PBox(p, PropAddress, Prop);
+    if (Select == 6)
+        res = PTorus(p, PropAddress, Prop);
+    if (Select == 7)
+        res = PTorusN(p, PropAddress, Prop);
+    if (Select == 8)
+        res = PCone(p, PropAddress, Prop);
+    if (Select == 9)
+        res = PConeN(p, PropAddress, Prop);
+    if (Select == 10)
+        res = PCapsule(p, PropAddress, Prop);
+    if (Select == 11)
+        res = PCapsuleN(p, PropAddress, Prop);
 	return res;
 }
+#endif

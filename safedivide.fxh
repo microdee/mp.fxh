@@ -1,3 +1,4 @@
+#if !defined(SAFEDIVIDE_FXH)
 #define SAFEDIVIDE_FXH 1
 
 float sdiv(float a, float b)
@@ -35,3 +36,4 @@ float4 sdiv(float4 a, float4 b)
 	res.w = sdiv(a.w, b.w);
 	return res;
 }
+#endif

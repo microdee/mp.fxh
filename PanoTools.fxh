@@ -1,3 +1,4 @@
+#if !defined(PANOTOOLS_FXH)
 #define PANOTOOLS_FXH 1
 
 float2 DirToUV(float3 p){
@@ -18,3 +19,4 @@ float3 UVToDir(float2 UV)
 	p.xz=r2d(p.xz,UV.x+.5);
 	return p;
 }
+#endif

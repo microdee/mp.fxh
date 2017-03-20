@@ -1,11 +1,13 @@
+#if !defined(DFOPERANDS_FXH)
 #define DFOPERANDS_FXH
 // combining stuff from IQ http://www.iquilezles.org/www/articles/distfunctions/distfunctions.htm
 // and http://mercury.sexy/hg_sdf/
 
-#if !defined(SAFESIGN_FXH)
+#if defined(__INTELLISENSE__)
+#include <safesign.fxh>
+#include <mod.fxh>
+#else
 #include <packs/mp.fxh/safesign.fxh>
-#endif
-#if !defined(MOD_FXH)
 #include <packs/mp.fxh/mod.fxh>
 #endif
 
@@ -312,3 +314,4 @@ float blend(float a, float b, uint s, float mass)
 	if(s==7) res = a;
 	return res;
 }
+#endif

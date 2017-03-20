@@ -1,3 +1,4 @@
+#if !defined(LIGHTSTRUCTS_FXH)
 #define LIGHTSTRUCTS_FXH 1
 
 struct PointLightProp
@@ -44,3 +45,4 @@ struct SunLightProp
     // NoF = 27
     // Size = 108
 };
+#endif

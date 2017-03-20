@@ -1,13 +1,13 @@
-
+#if !defined(MREFORWARD_FXH)
 #define MREFORWARD_FXH 1
 
-#if !defined(POWS_FXH)
+#if defined(__INTELLISENSE__)
+#include <pows.fxh>
+#include <bitwise.fxh>
+#include <InstanceParams.fxh>
+#else
 #include <packs/mp.fxh/pows.fxh>
-#endif
-#if !defined(BITWISE_FXH)
 #include <packs/mp.fxh/bitwise.fxh>
-#endif
-#if !defined(INSTANCEPARAMS_FXH)
 #include <packs/mp.fxh/InstanceParams.fxh>
 #endif
 
@@ -192,3 +192,4 @@ float4 TriPlanarArraySampleLevel(Texture2DArray tex, SamplerState s0, float3 pos
 	float4 col = colxy*d.xxxx + colxz*d.yyyy + colyz*d.zzzz;
 	return col;
 }
+#endif

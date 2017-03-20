@@ -1,6 +1,9 @@
-#define DFPRIMITIVEINTERFACE_FXH
+#if !defined(DFPRIMITIVEINTERFACE_FXH)
+#define DFPRIMITIVEINTERFACE_FXH 1
 
-#if !defined(DFPRIMITIVESELECTOR_FXH)
+#if defined(__INTELLISENSE__)
+#include <DFPrimitiveSelector.fxh>
+#else
 #include <packs/mp.fxh/DFPrimitiveSelector.fxh>
 #endif
 
@@ -118,3 +121,5 @@ cCapsule Capsule;
 cCapsuleN CapsuleN;
 
 iPrimitive iprim <string uiname="Primitive";string linkclass="Sphere,SphereN,Cylinder,CylinderN,Plane,Box,Torus,TorusN,Cone,ConeN,Capsule,CapsuleN";> = Sphere;
+
+#endif

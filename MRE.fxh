@@ -1,12 +1,13 @@
+#if !defined(MRE_FXH)
 #define MRE_FXH 1
 
-#if !defined(POWS_FXH)
+#if defined(__INTELLISENSE__)
+#include <pows.fxh>
+#include <bitwise.fxh>
+#include <depthreconstruct.fxh>
+#else
 #include <packs/mp.fxh/pows.fxh>
-#endif
-#if !defined(BITWISE_FXH)
 #include <packs/mp.fxh/bitwise.fxh>
-#endif
-#if !defined(DEPTHRECONSTRUCT_FXH)
 #include <packs/mp.fxh/depthreconstruct.fxh>
 #endif
 
@@ -82,3 +83,4 @@ float3 GetWorldNormal(SamplerState SS, float2 uv)
 {
 	return normalize(mul(float4(Normals.SampleLevel(SS, uv, 0).rgb, 0), CamViewInv).xyz);
 }
+#endif

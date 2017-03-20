@@ -1,5 +1,9 @@
+#if !defined(DEPTHRECONSTRUCT_FXH)
 #define DEPTHRECONSTRUCT_FXH 1
-#if !defined(POWS_FXH)
+
+#if defined(__INTELLISENSE__)
+#include <pows.fxh>
+#else
 #include <packs/mp.fxh/pows.fxh>
 #endif
 
@@ -79,3 +83,4 @@ float3 UVDtoWORLD(float2 UV, float d, float3 NearFarPow, float4x4 tVI, float4x4 
 {
 	return mul(float4(UVDtoVIEW(UV, d, NearFarPow, tP, tPI),1), tVI).xyz;
 }
+#endif

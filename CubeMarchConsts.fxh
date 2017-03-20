@@ -1,3 +1,5 @@
+#if !defined(CUBEMARCHCONSTS_FXH)
+#define CUBEMARCHCONSTS_FXH 1
 
 uint2 edge_to_verts[12] : IMMUTABLE =
 {
@@ -274,3 +276,4 @@ int4 edge_connect_list[1280] : IMMUTABLE =
 	int4(0,  3,  8, -1), int4(-1, -1, -1, -1), int4(-1, -1, -1, -1), int4(-1, -1, -1, -1), int4(-1, -1, -1, -1),
 	int4(-1, -1, -1, -1), int4(-1, -1, -1, -1), int4(-1, -1, -1, -1), int4(-1, -1, -1, -1), int4(-1, -1, -1, -1)
 };
+#endif

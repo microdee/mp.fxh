@@ -1,3 +1,4 @@
+#if !defined(VROTATE_FXH)
 #define VROTATE_FXH
 
 #if !defined(PI)
@@ -23,3 +24,4 @@ float4x4 VRotate(float rotX,
                     cx * sy       ,-sx   , cx * cy        , 0,
                     0             , 0    , 0              , 1);
   }
+#endif

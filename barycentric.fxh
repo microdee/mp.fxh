@@ -1,40 +1,16 @@
+#if !defined(BARYCENTRIC_FXH)
+#define BARYCENTRIC_FXH 1
 
 
-struct InputStruct
+float3 BC(float3 input[3] , float3 uv)
 {
-    float3 cpoint ;
-	float3 norm ;
-	float4 TexCd;
-	
-};
-
-float3  BC (InputStruct input [3] , float3 uv)
-{
-	
 	for(uint i=0 ; i<3; i++)
-		{
-		float3 p = uv.x * input[i].cpoint  
-        + uv.y * input[i].cpoint  
-        + uv.z * input[i].cpoint ;
-        	
-return p; 	
-		}
+	{
+		float3 p = uv.x * input[i]
+        + uv.y * input[i]
+        + uv.z * input[i];
+    }
+    return p; 	
 }
 
-
-struct BCS(InputStruct input,float3 uv)
-{
-
-	for(uint i=0 ; i<3; i++)
-		{
-		float3 p = uv.x * input[i].cpoint  
-        + uv.y * input[i].cpoint  
-        + uv.z * input[i].cpoint ;
-        	
-
-    return output;
-			
-		}
-}
-
- 
+#endif

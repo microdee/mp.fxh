@@ -1,19 +1,19 @@
-#if !defined(POWS_FXH)
+#if !defined(COOKTORRANCE_FXH)
+#define COOKTORRANCE_FXH 1
+
+#if defined(__INTELLISENSE__)
+#include <pows.fxh>
+#include <safedivide.fxh>
+#include <Materials.fxh>
+#include <MRE.fxh>
+#include <LightUtils.fxh>
+#else
 #include <packs/mp.fxh/pows.fxh>
-#endif
-#if !defined(SAFEDIVIDE_FXH)
 #include <packs/mp.fxh/safedivide.fxh>
-#endif
-#if !defined(MATERIALS_FXH)
 #include <packs/mp.fxh/Materials.fxh>
-#endif
-#if !defined(MRE_FXH)
 #include <packs/mp.fxh/MRE.fxh>
-#endif
-#if !defined(LIGHTUTILS_FXH)
 #include <packs/mp.fxh/LightUtils.fxh>
 #endif
-
 
 #define ROUGHNESS_LOOK_UP 0
 #define ROUGHNESS_BECKMANN 1
@@ -507,3 +507,4 @@ Components CookTorranceSunSSS(SamplerState s0, float2 uv, float2 sR, float light
     }
     return outc;
 }
+#endif

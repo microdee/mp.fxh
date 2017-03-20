@@ -1,3 +1,4 @@
+#if !defined(MAP_FXH)
 #define MAP_FXH
 
 float map(float sb, float st, float db, float dt, float l)
@@ -20,3 +21,4 @@ float4 map(float4 sb, float4 st, float4 db, float4 dt, float4 l)
 	float4 ll = (l-sb) / (st-sb);
 	return lerp(db, dt, l);
 }
+#endif

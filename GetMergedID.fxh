@@ -1,4 +1,4 @@
-
+#if !defined(GETMERGEDID_FXH)
 #define GETMERGEDID_FXH 1
 uint GetMergedGeomID(StructuredBuffer<uint> src, uint vid, uint geomcount)
 {
@@ -15,3 +15,4 @@ uint GetMergedGeomID(StructuredBuffer<uint> src, uint vid, uint geomcount)
 	}
 	return res;
 }
+#endif

@@ -1,3 +1,4 @@
+#if !defined(POISSONDISC_FXH)
 #define POISSONDISC_FXH 1
 
 float3 PoissonDisc(float3 N, float t)
@@ -26,3 +27,4 @@ float3 PoissonDiscDir(float3 N, float t, float r)
 	float3 P = PoissonDisc(N, t) + normalize(N);
 	return lerp(N, normalize(P), r);
 }
+#endif

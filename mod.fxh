@@ -1,3 +1,4 @@
+#if !defined(MOD_FXH)
 #define MOD_FXH
 
 float mod(float x, float y)
@@ -16,3 +17,4 @@ float4 mod(float4 x, float4 y)
 {
   return x - y * floor(x/y);
 }
+#endif

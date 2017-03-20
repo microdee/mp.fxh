@@ -1,7 +1,11 @@
-#if !defined(STDMATH_FXH)
+#if !defined(QUATERNION_FXH)
+#define QUATERNION_FXH
+
+#if defined(__INTELLISENSE__)
+#include <copysign.fxh>
+#include <pows.fxh>
+#else
 #include <packs/mp.fxh/copysign.fxh>
-#endif
-#if !defined(POWS_FXH)
 #include <packs/mp.fxh/pows.fxh>
 #endif
 
@@ -142,3 +146,4 @@ float4 qLookAt(float3 d, float3 fwvec)
     float eangle = clamp(dfd * 0.5, -0.5, 0);
     return qmul(aa2q(fn, eangle), rot);
 }
+#endif

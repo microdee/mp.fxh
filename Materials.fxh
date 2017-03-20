@@ -1,6 +1,9 @@
+#if !defined(MATERIALS_FXH)
 #define MATERIALS_FXH 1
 
-#if !defined(MATERIALFEATURES_FXH)
+#if defined(__INTELLISENSE__)
+#include <MaterialFeatures.fxh>
+#else
 #include <packs/mp.fxh/MaterialFeatures.fxh>
 #endif
 
@@ -350,3 +353,4 @@ uint FeatureID(uint4 FeatureFlag)
 		return ret;
 	}
 //#endif // get parameters
+#endif
