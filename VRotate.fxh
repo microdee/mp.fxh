@@ -5,6 +5,15 @@
 #define PI 3.14159265359
 #endif
 
+float2 VRotate(float2 orig, float cy)
+{
+    float isin = sin(cy * PI*2);
+    float icos = cos(cy * PI*2);
+    return float2(
+        (orig.x * icos) + (orig.y * (-isin)),
+        (orig.x * isin) + (orig.y * icos)
+    );
+}
 float4x4 VRotate(float rotX,
          float rotY,
          float rotZ)
