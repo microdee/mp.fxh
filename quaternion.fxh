@@ -54,6 +54,12 @@ float4 m2q(float3x3 m)
     q.z = copysign( q.z, m[0][1] - m[1][0] );
     return normalize(q);
 }
+float4 axes2q(float3 X, float3 Y, float3 Z)
+{
+    float3x3 m = 0;
+    m[0] = X; m[1] = Y; m[2] = Z;
+    return m2q(m);
+}
 /*
 float4 m2q(float3x3 m)
 {
