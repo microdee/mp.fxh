@@ -16,16 +16,16 @@ float4 sqr(float4 x)
 {
     return x * x;
 }
-float square (float x) {
+float square(float x) {
 	return x*x;
 }
-float2 square (float2 x) {
+float2 square(float2 x) {
 	return x*x;
 }
-float3 square (float3 x) {
+float3 square(float3 x) {
 	return x*x;
 }
-float4 square (float4 x) {
+float4 square(float4 x) {
 	return x*x;
 }
 

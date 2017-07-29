@@ -1,19 +1,14 @@
 #if !defined(DISCSAMPLE_FXH)
 #define DISCSAMPLE_FXH 1
 
-#if defined(__INTELLISENSE__)
-#include <PoissonDisc.fxh>
-#include <PanoTools.fxh>
-#else
 #include <packs/mp.fxh/PoissonDisc.fxh>
 #include <packs/mp.fxh/PanoTools.fxh>
-#endif
 
 #if !defined(PI)
 	#define PI 3.14159265358979
 #endif
 
-#if !defined(DISCSAMPLES)
+#if !defined(DISCSAMPLES) /// Type int
 	#define DISCSAMPLES 16
 #endif
 
