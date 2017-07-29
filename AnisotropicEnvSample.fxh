@@ -7,9 +7,10 @@
 #else
 #include <packs/mp.fxh/PanoTools.fxh>
 #include <packs/mp.fxh/minmax.fxh>
+#include <packs/mp.fxh/noise.fxh>
 #endif
 
-#if !defined(AESAMPLES_W)
+#if !defined(AESAMPLES_W) /// Type "int int"
 #define AESAMPLES_W 10
 #define AESAMPLES_H 10
 #endif
@@ -51,16 +52,17 @@ float4 AnisotropicSample(
                 float2 progp = prog * pmul;
                 progp *= blur;
                 // might avoid potential shallow eye-vector problem
-                #if defined(FIXSHALLOWEYE)
-                progp.x /= max(0.001, 1-abs(dot(dir, tangent)));
-                progp.y /= max(0.001, 1-abs(dot(dir, bitangent)));
+                #if defined(FIXSHALLOWEYE) /// Type switch
+                    progp.x /= max(0.001, 1-abs(dot(dir, tangent)));
+                    progp.y /= max(0.001, 1-abs(dot(dir, bitangent)));
                 #endif
 
-                float lodmod = lerp(vmin(blur), (blur.x+blur.y)/2, 0.5);
+                float lodmod = vmin(blur);
     			float lod = lerp(0, maxmiplevel, pow(lodmod, 0.5));
                 float3 rd = normalize(dir + tangent*progp.x + bitangent*progp.y);
+                rd += dnoise3(rd.xy,rd.z) * (tangent*blur.x + bitangent*blur.y) * 0.2;
                 float cw = lerp(0.5, 1, pmul.x * pmul.y);
-    			col += envtex.SampleLevel(ss, DirToUV(rd), lod) * cw;
+    			col += envtex.SampleLevel(ss, DirToUV(normalize(rd)), lod) * cw;
                 wg += cw;
             }
 		}
