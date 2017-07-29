@@ -256,12 +256,12 @@ float smithG_GGX(float NdotV, float alphaG)
 {
 	float a = alphaG * alphaG;
 	float b = NdotV * NdotV;
-	return 1 / (NdotV + sqrt(a + b - a * b));
+	return 1 / (NdotV + pows(a + b - a * b, 0.5));
 }
 
 float smithG_GGX_aniso(float NdotV, float VdotX, float VdotY, float ax, float ay)
 {
-	return 1 / (NdotV + sqrt(sqr(VdotX * ax) + sqr(VdotY * ay) + sqr(NdotV)));
+	return 1 / (NdotV + pows(sqr(VdotX * ax) + sqr(VdotY * ay) + sqr(NdotV), 0.5));
 }
 
 float3 mon2lin(float3 x)
@@ -286,8 +286,8 @@ class cDisney : iBrdf
 		float clearcoat = BRDF_PARAM_Disney_clearcoat;
 		float clearcoatGloss = BRDF_PARAM_Disney_clearcoatGloss;
 
-		float NdotL = dot(N, L);
 		float NdotV = dot(N, V);
+		float NdotL = dot(N, L);
 
 		float3 H = normalize(L + V);
 		float NdotH = dot(N, H);
@@ -304,7 +304,7 @@ class cDisney : iBrdf
     // and lerp in diffuse retro-reflection based on roughness
 		float FL = SchlickFresnel(NdotL), FV = SchlickFresnel(NdotV);
 		float Fd90 = 0.5 + 2 * LdotH * LdotH * roughness;
-		float Fd = lerp(1.0, Fd90, FL) * lerp(1.0, Fd90, FV);
+		float Fd = lerp(1.0, Fd90, saturate(FL)) * lerp(1.0, Fd90, saturate(FV));
 
     // Based on Hanrahan-Krueger brdf approximation of isotropic bssrdf
     // 1.25 scale is used to (roughly) preserve albedo
@@ -314,12 +314,12 @@ class cDisney : iBrdf
 		float ss = 1.25 * (Fss * (1 / (NdotL + NdotV) - .5) + .5);
 
     // specular
-		float aspect = sqrt(1 - anisotropic * .9);
+		float aspect = pows(1 - anisotropic * 0.9, 0.5);
 		float ax = max(.001, sqr(roughness) / aspect);
 		float ay = max(.001, sqr(roughness) * aspect);
 		float Ds = GTR2_aniso(NdotH, dot(H, X), dot(H, Y), ax, ay);
 		float FH = SchlickFresnel(LdotH);
-		float3 Fs = lerp(Cspec0, 1, FH);
+		float3 Fs = lerp(Cspec0, 1, saturate(FH));
 		float Gs;
 		Gs = smithG_GGX_aniso(NdotL, dot(L, X), dot(L, Y), ax, ay);
 		Gs *= smithG_GGX_aniso(NdotV, dot(V, X), dot(V, Y), ax, ay);
@@ -335,7 +335,8 @@ class cDisney : iBrdf
 		float3 res =  ((1 / PI) * min(lerp(Fd, ss, subsurface), 1) * Cdlin + Fsheen)
         * (1 - metallic)
         + Gs * Fs * Ds + .25 * clearcoat * Gr * Fr * Dr;
-        res *= smoothstep(0,1,saturate((NdotL)*3));
+        res *= saturate(NdotL*10+0.8);
+        //res *= NdotL <= 0;
         res = max(res, 0);
 		return res;
 	}
