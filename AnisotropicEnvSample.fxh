@@ -10,7 +10,7 @@
 #include <packs/mp.fxh/noise.fxh>
 #endif
 
-#if !defined(AESAMPLES_W) /// Type "int int"
+#if !defined(AESAMPLES_W) /// -type int
 #define AESAMPLES_W 10
 #define AESAMPLES_H 10
 #endif
@@ -52,7 +52,7 @@ float4 AnisotropicSample(
                 float2 progp = prog * pmul;
                 progp *= blur;
                 // might avoid potential shallow eye-vector problem
-                #if defined(FIXSHALLOWEYE) /// Type switch
+                #if defined(FIXSHALLOWEYE) /// -type switch
                     progp.x /= max(0.001, 1-abs(dot(dir, tangent)));
                     progp.y /= max(0.001, 1-abs(dot(dir, bitangent)));
                 #endif

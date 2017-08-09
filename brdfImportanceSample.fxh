@@ -23,10 +23,10 @@
 	#define PI 3.14159265358979
 #endif
 
-#if !defined(IMPORTANTSAMPLES) /// Type int
+#if !defined(IMPORTANTSAMPLES) /// -type int
 	#define IMPORTANTSAMPLES 8
 #endif
-#if !defined(DIFFUSESAMPLES) /// Type int
+#if !defined(DIFFUSESAMPLES) /// -type int
 	#define DIFFUSESAMPLES 8
 #endif
 

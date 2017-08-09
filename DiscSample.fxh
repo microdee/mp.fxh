@@ -8,7 +8,7 @@
 	#define PI 3.14159265358979
 #endif
 
-#if !defined(DISCSAMPLES) /// Type int
+#if !defined(DISCSAMPLES) /// -type int
 	#define DISCSAMPLES 16
 #endif
 

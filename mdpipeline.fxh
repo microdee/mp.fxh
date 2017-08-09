@@ -4,7 +4,7 @@
 #include <packs/mp.fxh/mdpipeline-defs.fxh>
 #include <packs/mp.fxh/DisplaceNormal.fxh>
 
-#if !defined(MDP_MAINUVLAYER) /// Type token
+#if !defined(MDP_MAINUVLAYER) /// -type token
 #define MDP_MAINUVLAYER TEXCOORD0
 #endif
 
@@ -49,7 +49,7 @@ struct MDP_VSIN
     float3 Pos : POSITION;
     float3 Norm : NORMAL;
 
-	#if defined(HAS_TEXCOORD0) /// Type switch Pin Visibility Hidden
+	#if defined(HAS_TEXCOORD0) /// -type switch -pin "-visibility hidden"
     float2 UV : MDP_MAINUVLAYER;
 	#endif
 
@@ -57,22 +57,22 @@ struct MDP_VSIN
     MDP_EXTRAUVS
     #endif
 
-    #if defined(HAS_TANGENT) /// Type switch Pin Visibility Hidden
+    #if defined(HAS_TANGENT) /// -type switch -pin "-visibility hidden"
     float4 Tan : TANGENT;
     float4 Bin : BINORMAL;
     #endif
 
-    #if defined(HAS_PREVPOS) /// Type switch Pin Visibility Hidden
+    #if defined(HAS_PREVPOS) /// -type switch -pin "-visibility hidden"
     float3 ppos : PREVPOS;
     #endif
 
-    #if defined(HAS_SUBSETID) /// Type switch Pin Visibility Hidden
+    #if defined(HAS_SUBSETID) /// -type switch -pin "-visibility hidden"
     uint ssid : SUBSETID;
     #endif
-    #if defined(HAS_MATERIALID) /// Type switch Pin Visibility Hidden
+    #if defined(HAS_MATERIALID) /// -type switch -pin "-visibility hidden"
     uint mid : MATERIALID;
     #endif
-    #if defined(HAS_INSTANCEID) && !defined(USE_SVINSTANCEID) /// Type switch Pin Visibility Hidden
+    #if defined(HAS_INSTANCEID) && !defined(USE_SVINSTANCEID) /// -type switch -pin "-visibility hidden"
     uint iid : INSTANCEID;
     #endif
 	#if defined(USE_SVINSTANCEID)
@@ -110,7 +110,7 @@ struct MDP_PSIN
     #endif
 };
 
-#if defined(TESSELLATE) /// Type switch
+#if defined(TESSELLATE) /// -type switch
 #include <packs/mp.fxh/PNTriangleUtils.fxh>
 #endif
 
@@ -150,7 +150,7 @@ VSOUTPUTTYPE MDP_VS(MDP_VSIN input)
 	#endif
 
 	float4x4 w = float4x4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
-	#if defined(USE_SUBSETTRANSFORMS) && !defined(IGNORE_BUFFERS) /// Type switch
+	#if defined(USE_SUBSETTRANSFORMS) && !defined(IGNORE_BUFFERS) /// -type switch
 		w = mul(Tr[ssid], w);
 	#endif
 	#if defined(HAS_INSTANCEID) || defined(USE_SVINSTANCEID)
@@ -169,7 +169,7 @@ VSOUTPUTTYPE MDP_VS(MDP_VSIN input)
 
 	#if defined(TESSELLATE)
 		output.Norm = normalize(mul(float4(input.Norm,0), w).xyz);
-		#if defined(INV_NORMALS) /// Type switch
+		#if defined(INV_NORMALS) /// -type switch
 			output.Norm *= -1;
 		#endif
 
@@ -178,7 +178,7 @@ VSOUTPUTTYPE MDP_VS(MDP_VSIN input)
 	    #if defined(HAS_TANGENT)
 		    output.Tan = normalize(mul(float4(input.Tan.xyz,0), w).xyz);
 		    output.Bin = normalize(mul(float4(input.Bin.xyz,0), w).xyz);
-			#if defined(HAS_TANGENT_WINDING) /// Type switch Pin Visibility Hidden
+			#if defined(HAS_TANGENT_WINDING) /// -type switch -pin "-visibility hidden"
 			    output.Tan *= -intan.w;
 			    output.Bin *= -inbin.w;
 		    #endif
@@ -275,7 +275,7 @@ void MDP_GS(triangle MDP_PSIN input[3], inout TriangleStream<MDP_PSIN> gsout)
     float3 f2 = input[2].posw.xyz - input[0].posw.xyz;
 
 	float3 norm = 0;
-	#if defined(FLATNORMALS) /// Type switch
+	#if defined(FLATNORMALS) /// -type switch
 		norm = normalize(cross(f1, f2));
 		norm = mul(float4(norm, 0), tV).xyz;
 	#endif
