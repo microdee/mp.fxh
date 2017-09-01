@@ -24,6 +24,7 @@ cbuffer mdpPerDraw : register(b1)
     float4x4 ptV : PREVIOUSVIEW;
     float4x4 ptP : PREVIOUSPROJECTION;
 	float CurveAmount = 1;
+	float PrevCurveAmount = 1;
 	float DisplaceNormalInfluence = 1;
 	float DisplaceVelocityGain = 0;
 	float Factor = 5;

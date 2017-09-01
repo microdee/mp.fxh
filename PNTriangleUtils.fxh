@@ -167,7 +167,7 @@ MDP_PSIN DS( MDP_HSCONST HSConstantData, const OutputPatch<MDP_HDSIN, 3> I, floa
     float3 pf3Position = InterpolatePos(
         HSConstantData,
         I[0].ppos.xyz, I[1].ppos.xyz, I[2].ppos.xyz,
-        fUVW2, fUVW, CurveAmount,
+        fUVW2, fUVW, PrevCurveAmount,
     	pcPos, pfPos
     );
 	float2 disp = 0;
