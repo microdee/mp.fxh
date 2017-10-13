@@ -1,6 +1,7 @@
 #if !defined(BRDF_FXH)
 #define BRDF_FXH
 #include <packs/mp.fxh/pows.fxh>
+#include <packs/mp.fxh/safedivide.fxh>
 
 #if !defined(PI)
 #define PI 3.14159265358979323846
@@ -249,7 +250,7 @@ float GTR2(float NdotH, float a)
 
 float GTR2_aniso(float NdotH, float HdotX, float HdotY, float ax, float ay)
 {
-	return 1 / (PI * ax * ay * sqr(sqr(HdotX / ax) + sqr(HdotY / ay) + NdotH * NdotH));
+	return sdiv(1, PI * ax * ay * sqr(sqr(HdotX / ax) + sqr(HdotY / ay) + NdotH * NdotH));
 }
 
 float smithG_GGX(float NdotV, float alphaG)
@@ -261,7 +262,8 @@ float smithG_GGX(float NdotV, float alphaG)
 
 float smithG_GGX_aniso(float NdotV, float VdotX, float VdotY, float ax, float ay)
 {
-	return 1 / (NdotV + pows(sqr(VdotX * ax) + sqr(VdotY * ay) + sqr(NdotV), 0.5));
+	return sdiv(1, NdotV + pows(sqr(VdotX * ax) + sqr(VdotY * ay) + sqr(NdotV), 0.5));
+	//return 1 / (NdotV + pows(sqr(VdotX * ax) + sqr(VdotY * ay) + sqr(NdotV), 0.5));
 }
 
 float3 mon2lin(float3 x)
@@ -278,7 +280,7 @@ class cDisney : iBrdf
 		float metallic = BRDF_PARAM_Disney_metallic;
 		float subsurface = BRDF_PARAM_Disney_subsurface;
 		float specular = BRDF_PARAM_Disney_specular;
-		float roughness = BRDF_PARAM_Disney_roughness;
+		float roughness = BRDF_PARAM_Disney_roughness + 0.0280;
 		float specularTint = BRDF_PARAM_Disney_specularTint;
 		float anisotropic = BRDF_PARAM_Disney_anisotropic;
 		float sheen = BRDF_PARAM_Disney_sheen;
@@ -305,6 +307,7 @@ class cDisney : iBrdf
 		float FL = SchlickFresnel(NdotL), FV = SchlickFresnel(NdotV);
 		float Fd90 = 0.5 + 2 * LdotH * LdotH * roughness;
 		float Fd = lerp(1.0, Fd90, saturate(FL)) * lerp(1.0, Fd90, saturate(FV));
+        //Fd *= saturate(NdotL*3+0.1);
 
     // Based on Hanrahan-Krueger brdf approximation of isotropic bssrdf
     // 1.25 scale is used to (roughly) preserve albedo
@@ -332,12 +335,13 @@ class cDisney : iBrdf
 		float Fr = lerp(.04, 1.0, FH);
 		float Gr = smithG_GGX(NdotL, .25) * smithG_GGX(NdotV, .25);
 
-		float3 res =  ((1 / PI) * min(lerp(Fd, ss, subsurface), 1) * Cdlin + Fsheen)
-        * (1 - metallic)
-        + Gs * Fs * Ds + .25 * clearcoat * Gr * Fr * Dr;
-        res *= saturate(NdotL*10+0.8);
+		float3 res =  ((1 / PI) * saturate(lerp(Fd, ss, subsurface)) * Cdlin + Fsheen);
+        res *= (1 - metallic);
+        res += Gs * Fs * Ds * saturate(NdotL+0.60);
+        res += .25 * clearcoat * Gr * Fr * Dr;
+        //res *= saturate(NdotL+0.70);
         //res *= NdotL <= 0;
-        res = max(res, 0);
+        res = saturate(res);
 		return res;
 	}
 };

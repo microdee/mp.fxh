@@ -177,6 +177,8 @@ VSOUTPUTTYPE MDP_VS(MDP_VSIN input)
 		output.Pos = mul(float4(input.Pos,1), w);
 
 	    #if defined(HAS_TANGENT)
+			float4 intan = input.Tan;
+			float4 inbin = input.Bin;
 		    output.Tan = normalize(mul(float4(input.Tan.xyz,0), w).xyz);
 		    output.Bin = normalize(mul(float4(input.Bin.xyz,0), w).xyz);
 			#if defined(HAS_TANGENT_WINDING) /// -type switch -pin "-visibility hidden"
