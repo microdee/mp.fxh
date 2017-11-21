@@ -15,7 +15,7 @@ SamplerState sT <string uiname="Textures Sampler";>
     AddressV = Wrap;
 };
 
-cbuffer mdpPerDraw : register(b1)
+cbuffer mdpPerDraw : register( MDP_CBPERDRAW_REGISTER )
 {
 	float4x4 tV : VIEW;
 	float4x4 tVI : VIEWINVERSE;
@@ -29,7 +29,7 @@ cbuffer mdpPerDraw : register(b1)
 	float DisplaceVelocityGain = 0;
 	float Factor = 5;
 };
-cbuffer mdpPerObj : register( b2 )
+cbuffer mdpPerObj : register( MDP_CBPEROBJ_REGISTER )
 {
 	float4x4 tW : WORLD;
     float4x4 ptW <string uiname="Previous World";>;
