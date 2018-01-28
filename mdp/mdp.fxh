@@ -112,7 +112,7 @@ struct MDP_PSIN
 };
 
 #if defined(TESSELLATE) /// -type switch
-#include <packs/mp.fxh/PNTriangleUtils.fxh>
+#include <packs/mp.fxh/mdp/geom.pnTriangles.fxh>
 #endif
 
 

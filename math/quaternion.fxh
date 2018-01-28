@@ -3,7 +3,6 @@
 
 #include <packs/mp.fxh/math/copySign.fxh>
 #include <packs/mp.fxh/math/pows.fxh>
-#endif
 
 #if !defined(PI)
 #define PI 3.1415926535897932

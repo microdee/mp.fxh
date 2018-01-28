@@ -341,7 +341,7 @@ class cDisney : iBrdf
         res += .25 * clearcoat * Gr * Fr * Dr;
         //res *= saturate(NdotL+0.70);
         //res *= NdotL <= 0;
-        res = saturate(res);
+        res = max(res,0);
 		return res;
 	}
 };
