@@ -171,7 +171,7 @@ MDP_PSIN DS( MDP_HSCONST HSConstantData, const OutputPatch<MDP_HDSIN, 3> I, floa
     	pcPos, pfPos
     );
 	float2 disp = 0;
-	if(Displace.x > 0.0001)
+	if(abs(Displace.x) > 0.0001)
 		disp = DispMap.SampleLevel(sT, output.UV, 0).rg;
 	float3 posi = f3Position + disp.r * f3Normal * Displace.x;
 	float3 posflat = fPos + disp.r * f3Normal * Displace.x;
@@ -195,7 +195,7 @@ MDP_PSIN DS( MDP_HSCONST HSConstantData, const OutputPatch<MDP_HDSIN, 3> I, floa
 	nt.n = f3Normal;
 	nt.t = f3Tangent;
 	nt.b = f3Binormal;
-	if(Displace.x > 0.0001)
+	if(abs(Displace.x) > 0.0001)
 		nt = SampleDisplaceNormalTangents(nt, DispMap, sT, output.UV, 0.01, Displace.x * DisplaceNormalInfluence, 0);
 	
 	output.Norm = normalize(mul(float4(nt.n,0), tV).xyz);
