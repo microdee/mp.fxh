@@ -323,9 +323,9 @@ class cDisney : iBrdf
 		float Ds = GTR2_aniso(NdotH, dot(H, X), dot(H, Y), ax, ay);
 		float FH = SchlickFresnel(LdotH);
 		float3 Fs = lerp(Cspec0, 1, saturate(FH));
-		float Gs;
-		Gs = smithG_GGX_aniso(NdotL, dot(L, X), dot(L, Y), ax, ay);
+		float Gs = smithG_GGX_aniso(NdotL, dot(L, X), dot(L, Y), ax, ay);
 		Gs *= smithG_GGX_aniso(NdotV, dot(V, X), dot(V, Y), ax, ay);
+		Gs *= pow(saturate(NdotL*4+0.25), 2);
 
     // sheen
 		float3 Fsheen = FH * sheen * Csheen;
@@ -340,7 +340,7 @@ class cDisney : iBrdf
         res += Gs * Fs * Ds * saturate(NdotL+0.60);
         res += .25 * clearcoat * Gr * Fr * Dr;
         //res *= saturate(NdotL+0.70);
-        //res *= NdotL <= 0;
+        res *= pow(saturate(NdotV*4+1), 2);
         res = max(res,0);
 		return res;
 	}

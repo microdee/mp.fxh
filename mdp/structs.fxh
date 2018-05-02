@@ -100,7 +100,7 @@ cbuffer mdpPerObj : register( MDP_CBPEROBJ_REGISTER )
 {
 	float4x4 tW : WORLD;
     float4x4 ptW <string uiname="Previous World";>;
-    float4x4 tTex <string uiname="Texture Transform";>;
+    float4x4 tTex <string uiname="Texture Transform"; bool uvspace=true;>;
     float4x4 ptTex <string uiname="Previous Texture Transform";>;
     float ndepth <string uiname="Normal Depth";> = 0;
 	float2 Displace = 0;
