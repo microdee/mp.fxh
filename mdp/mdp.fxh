@@ -1,9 +1,18 @@
 #if !defined(mdp_mdp_fxh)
 #define mdp_mdp_fxh
 
+/*
+	this fxh provides common VS, GS and tessellation for rendering triangular geometry with your own PS.
+*/
+
+// see structs and common global variables defines here:
 #include <packs/mp.fxh/mdp/structs.fxh>
+
 #include <packs/mp.fxh/texture/displaceNormal.fxh>
 
+/*
+	The main TEXCOORD which is used for the main texture input
+*/
 #if !defined(MDP_MAINUVLAYER) /// -type token
 #define MDP_MAINUVLAYER TEXCOORD0
 #endif
@@ -19,6 +28,7 @@ VSOUTPUTTYPE MDP_VS(MDP_VSIN input)
 	uint ssid = 0;
 	uint mid = 0;
 	uint iid = 0;
+
 	#if defined(HAS_INSTANCEID) || defined(USE_SVINSTANCEID)
 		iid = input.iid;
 	#endif
@@ -33,6 +43,9 @@ VSOUTPUTTYPE MDP_VS(MDP_VSIN input)
 	output.mid = mid;
 	output.iid = iid;
 
+	/*
+		MDP_VS_PRE is for custom VS preparation
+	*/
 	#if defined(MDP_VS_PRE)
 	MDP_VS_PRE
 	#endif
@@ -164,6 +177,10 @@ VSOUTPUTTYPE MDP_VS(MDP_VSIN input)
 		#endif
 		output.ppos = mul(output.ppos, ptP);
 	#endif
+	
+	/*
+		MDP_VS_POST is for custom VS finalization
+	*/
 	#if defined(MDP_VS_POST)
 	MDP_VS_POST
 	#endif
@@ -176,6 +193,9 @@ void MDP_GS(triangle MDP_PSIN input[3], inout TriangleStream<MDP_PSIN> gsout)
     
 	MDP_PSIN o = (MDP_PSIN)0;
 
+	/*
+		MDP_GS_PERPRIMITIVE_PRE is for custom GS preparation
+	*/
 	#if defined(MDP_GS_PERPRIMITIVE_PRE)
 	MDP_GS_PERPRIMITIVE_PRE
 	#endif
@@ -184,10 +204,18 @@ void MDP_GS(triangle MDP_PSIN input[3], inout TriangleStream<MDP_PSIN> gsout)
     float3 f2 = input[2].posw.xyz - input[0].posw.xyz;
 
 	float3 norm = 0;
+	
+	/*
+		if defined normals will be calculated in GS
+	*/
 	#if defined(FLATNORMALS) /// -type switch
 		norm = normalize(cross(f1, f2));
 		norm = mul(float4(norm, 0), tV).xyz;
 	#endif
+
+	/*
+		if tangents are not present calculate them based on triangle UV's
+	*/
 	#if !defined(HAS_TANGENT)
 		float2 uU = input[1].UV - input[0].UV;
 	    float2 uV = input[2].UV - input[0].UV;
@@ -201,12 +229,18 @@ void MDP_GS(triangle MDP_PSIN input[3], inout TriangleStream<MDP_PSIN> gsout)
 		#endif
 	#endif
 
+	/*
+		MDP_GS_PERPRIMITIVE_POST is for custom GS finalization
+	*/
 	#if defined(MDP_GS_PERPRIMITIVE_POST)
 	MDP_GS_PERPRIMITIVE_POST
 	#endif
 	
 	for(uint i=0; i<3; i++)
 	{
+		/*
+			MDP_GS_PERVERTEX_PRE is for custom per-vertex GS preparation
+		*/
 		#if defined(MDP_GS_PERVERTEX_PRE)
 		MDP_GS_PERVERTEX_PRE
 		#endif
@@ -222,6 +256,9 @@ void MDP_GS(triangle MDP_PSIN input[3], inout TriangleStream<MDP_PSIN> gsout)
 			o.Bin = cross(o.Tan, o.Norm);
 		#endif
 
+		/*
+			MDP_GS_PERVERTEX_PRE is for custom per-vertex GS finalization
+		*/
 		#if defined(MDP_GS_PERVERTEX_POST)
 		MDP_GS_PERVERTEX_POST
 		#endif

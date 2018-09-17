@@ -19,17 +19,40 @@ float lengthn(float3 v, float n) {return pow((pow(abs(v.x),n)+pow(abs(v.y),n)+po
 float lengthn(float4 v, float n) {return pow((pow(abs(v.x),n)+pow(abs(v.y),n)+pow(abs(v.z),n)+pow(abs(v.w),n)),1/n);}
 
 // primitives
+/*
+    p: position in field
+    r: radius
+    return: distance
+*/
 float sSphere(float3 p, float r) {return length(p)-r;}
 float sSphere(float3 p, float r, float n) {return lengthn(p,n)-r;}
+
+/*
+    p: position in field
+    c.xy: offset
+    c.z: radius
+    return: distance
+*/
 float sCylinder(float3 p, float3 c) {return length(p.xz-c.xy)-c.z;}
 float sCylinder(float3 p, float3 c, float n) {return lengthn(p.xz-c.xy,n)-c.z;}
 
+/*
+    p: position in field
+    d: offset
+    n: normal
+    return: distance
+*/
 float sPlane(float3 p, float3 n, float d)
 {
 	float3 nn = normalize(n);
 	return dot(p,n) + d;
 }
 
+/*
+    p: position in field
+    b: bounds
+    return: distance
+*/
 float sBox(float3 p, float3 b)
 {
 	float3 d = abs(p) - b;
@@ -40,18 +63,30 @@ float uBoxCheap(float3 p, float3 b) {
 	return vmax(abs(p) - b);
 }
 // Same as above, but in two dimensions (an endless box)
-float uBox2Cheap(float2 p, float2 b) {
-	return vmax(abs(p)-b);
-}
 float uBox2(float2 p, float2 b) {
 	float2 d = abs(p) - b;
 	return length(max(d, 0)) + vmax(min(d, 0));
 }
+float uBox2Cheap(float2 p, float2 b) {
+	return vmax(abs(p)-b);
+}
 
+/*
+    p: position in field
+    r: radii
+    return: distance
+*/
 float sEllipsoid( float3 p, float3 r )
 {
     return (length( p/r ) - 1.0) * min(min(r.x,r.y),r.z);
 }
+
+/*
+    p: position in field
+    t.x: circle radius
+    t.y: extrusion
+    return: distance
+*/
 float sTorus( float3 p, float2 t )
 {
 	float2 q = float2(length(p.xz)-t.x,p.y);
@@ -62,6 +97,12 @@ float sTorus( float3 p, float2 t, float2 n)
 	float2 q = float2(lengthn(p.xz,n.x)-t.x,p.y);
 	return lengthn(q,n.y)-t.y;
 }
+
+/*
+    p: position in field
+    c: radii
+    return: distance
+*/
 float sCone( float3 p, float2 c )
 {
     float2 cc = normalize(c);
@@ -74,6 +115,13 @@ float sCone( float3 p, float2 c, float n )
     float q = lengthn(p.xy,n);
     return dot(cc,float2(q,p.z));
 }
+
+/*
+    p: position in field
+    a, b: start, end
+    r: radius
+    return: distance
+*/
 float sCapsule( float3 p, float3 a, float3 b, float r )
 {
     float3 pa = p - a;
@@ -88,21 +136,49 @@ float sCapsule( float3 p, float3 a, float3 b, float r, float n)
     float h = clamp( dot(pa,ba)/dot(ba,ba), 0.0, 1.0 );
     return lengthn(pa - ba*h, n) - r;
 }
+
+/*
+    p: position in field
+    h.x: radius
+    h.y: height
+    return: distance
+*/
 float sHexPrism( float3 p, float2 h )
 {
     float3 q = abs(p);
     return max(q.z-h.y,max((q.x*0.866025+q.y*0.5),q.y)-h.x);
 }
+
+/*
+    p: position in field
+    h.x: radius
+    h.y: height
+    return: distance
+*/
 float sTriPrism( float3 p, float2 h )
 {
     float3 q = abs(p);
     return max(q.z-h.y,max(q.x*0.866025+p.y*0.5,-p.y)-h.x*0.5);
 }
+
+/*
+    p: position in field
+    h.x: radius
+    h.y: height
+    return: distance
+*/
 float sCappedCylinder( float3 p, float2 h )
 {
   float2 d = abs(float2(length(p.xz),p.y)) - h;
   return min(max(d.x,d.y),0.0) + length(max(d,0.0));
 }
+
+/*
+    p: position in field
+    c.xy: radius
+    c.z: height
+    return: distance
+*/
 float sCappedCone( float3 p, float3 c )
 {
     float2 q = float2( length(p.xz), p.y );
@@ -128,6 +204,10 @@ float sBlob(float3 p) {
 	return l - 1.5 - 0.2 * (1.5 / 2)* cos(min(sqrt(1.01 - b / l)*(PI / 0.25), PI));
 }
 
+/*
+    p: position in field
+    a, b, c: triangle vertices
+*/
 float uTriangle( float3 p, float3 a, float3 b, float3 c )
 {
     float3 ba = b - a; float3 pa = p - a;
@@ -149,6 +229,11 @@ float uTriangle( float3 p, float3 a, float3 b, float3 c )
 }
 float uTriangle(float3 p, float3x3 v) { return uTriangle(p, v[0], v[1], v[2]); }
 float uTriangle(float3 p, float3 v[3]) { return uTriangle(p, v[0], v[1], v[2]); }
+
+/*
+    p: position in field
+    a, b, c, d: quad vertices
+*/
 float uQuad( float3 p, float3 a, float3 b, float3 c, float3 d )
 {
     float3 ba = b - a; float3 pa = p - a;

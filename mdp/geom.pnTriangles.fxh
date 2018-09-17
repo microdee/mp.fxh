@@ -1,6 +1,10 @@
 #if !defined(mdp_pnTriangles_fxh)
 #define mdp_pnTriangles_fxh
 
+/*
+	Tessellation component for md.pipeline
+*/
+
 #include <packs/mp.fxh/mdp/defines.fxh>
 #include <packs/mp.fxh/texture/displaceNormal.fxh>
 

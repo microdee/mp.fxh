@@ -1,7 +1,18 @@
 
+/*
+	Inset fxh for passing through texcoords of md.pipeline.geom.layout
+*/
+
+/*
+	Identifier intended to hold the output structure
+*/
 #if !defined(OUTVAR)
 #define OUTVAR output
 #endif
+
+/*
+	Identifier intended to hold the input structure
+*/
 #if !defined(INVAR)
 #define INVAR input
 #endif

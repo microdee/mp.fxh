@@ -1,6 +1,11 @@
 #if !defined(math_intersections_fxh)
 #define math_intersections_fxh 1
 #define EPSILON 0.0000001
+
+/*
+    Different triangle ray intersections
+*/
+
 bool Segment_TriangleMT(float3 sstart, float3 sstop, float3 tri0, float3 tri1, float3 tri2, out float3 intspoint)
 {
 	intspoint = 0;
@@ -36,6 +41,7 @@ bool Segment_TriangleMT(float3 sstart, float3 sstop, float3 tri0, float3 tri1, f
     else // This means that there is a line intersection but not a ray intersection.
         return false;
 }
+
 bool Segment_TriangleMP(float3 sstart, float3 sstop, float3 tri0, float3 tri1, float3 tri2, out float3 intspoint)
 {
 	float3 raypos=sstart;
@@ -95,6 +101,7 @@ bool Segment_TriangleMP(float3 sstart, float3 sstop, float3 tri0, float3 tri1, f
 	}
 	return hit;
 }
+
 //    Return: -1 = triangle is degenerate (a segment or point)
 //             0 =  disjoint (no intersect)
 //             1 =  intersect in unique point I1

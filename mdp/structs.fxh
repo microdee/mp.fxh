@@ -1,14 +1,17 @@
 #if !defined(mdp_structs_fxh)
 #define mdp_structs_fxh
 
+// See defines in there
 #include <packs/mp.fxh/mdp/defines.fxh>
 
+// Set output type of VS depending on Tessellation turned on
 #if defined(TESSELLATE)
 #define VSOUTPUTTYPE MDP_HDSIN
 #else
 #define VSOUTPUTTYPE MDP_PSIN
 #endif
 
+// VS Input
 struct MDP_VSIN
 {
     float3 Pos : POSITION;
@@ -17,7 +20,10 @@ struct MDP_VSIN
 	#if defined(HAS_TEXCOORD0) /// -type switch -pin "-visibility hidden"
     float2 UV : MDP_MAINUVLAYER;
 	#endif
-
+  
+    /*
+        Define MDP_EXTRAUVS for extra texcoords (TEXCOORD1..N)
+    */
     #if defined(MDP_EXTRAUVS)
     MDP_EXTRAUVS
     #endif
@@ -31,24 +37,43 @@ struct MDP_VSIN
     float3 ppos : PREVPOS;
     #endif
 
+    /*
+        Geometry has previous position per-vertex
+    */
     #if defined(HAS_SUBSETID) /// -type switch -pin "-visibility hidden"
     uint ssid : SUBSETID;
     #endif
+    
+    /*
+        Geometry has Material ID indicator on vertices
+    */
     #if defined(HAS_MATERIALID) /// -type switch -pin "-visibility hidden"
     uint mid : MATERIALID;
     #endif
+    
+    /*
+        Geometry has Instance ID indicator on vertices
+    */
     #if defined(HAS_INSTANCEID) && !defined(USE_SVINSTANCEID) /// -type switch -pin "-visibility hidden"
     uint iid : INSTANCEID;
     #endif
+    
+    /*
+        Instance ID should be read from system values
+    */
 	#if defined(USE_SVINSTANCEID)
     uint iid : SV_InstanceID;
 	#endif
 
+    /*
+        Define MDP_VSIN_EXTRA for anything more
+    */
     #if defined(MDP_VSIN_EXTRA)
     MDP_VSIN_EXTRA
     #endif
 };
 
+// PS Input
 struct MDP_PSIN
 {
     float4 svpos : SV_Position;

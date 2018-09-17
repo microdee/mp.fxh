@@ -3,6 +3,11 @@
 
 #include <packs/mp.fxh/df/primitiveSelector.fxh>
 
+/*
+    Convenience fxh for selecting primitives from an enum
+	Obsolete
+*/
+
 interface iPrimitive{
 	float Primitive(float3 p, uint i);
 	uint PropSize();
