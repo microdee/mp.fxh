@@ -4,9 +4,7 @@
 #include <packs/mp.fxh/math/poissonDisc.fxh>
 #include <packs/mp.fxh/texture/panorama.fxh>
 
-#if !defined(PI)
-	#define PI 3.14159265358979
-#endif
+#include <packs/mp.fxh/math/const.fxh>
 
 #if !defined(DISCSAMPLES) /// -type int
 	#define DISCSAMPLES 16

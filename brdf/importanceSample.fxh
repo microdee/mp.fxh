@@ -13,15 +13,12 @@
 #define BRDF_PARAM_Disney_clearcoat mat.Clearcoat
 #define BRDF_PARAM_Disney_clearcoatGloss mat.CCGloss
 
+#include <packs/mp.fxh/math/const.fxh>
 #include <packs/mp.fxh/math/poissonDisc.fxh>
 #include <packs/mp.fxh/texture/panorama.fxh>
 #include <packs/mp.fxh/brdf/brdf.fxh>
 #include <packs/mp.fxh/math/noise.fxh>
 #include <packs/mp.fxh/math/quaternion.fxh>
-
-#if !defined(PI)
-	#define PI 3.14159265358979
-#endif
 
 #if !defined(IMPORTANTSAMPLES) /// -type int
 	#define IMPORTANTSAMPLES 8

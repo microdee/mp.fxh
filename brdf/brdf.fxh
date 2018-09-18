@@ -1,11 +1,10 @@
 #if !defined(brdf_brdf_fxh)
 #define brdf_brdf_fxh
+#include <packs/mp.fxh/math/const.fxh>
 #include <packs/mp.fxh/math/pows.fxh>
 #include <packs/mp.fxh/math/safeDivide.fxh>
 
-#if !defined(PI)
-#define PI 3.14159265358979323846
-#endif
+
 
 #if !defined(BRDF_ARGSDEF)
 #define BRDF_ARGSDEF

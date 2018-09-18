@@ -5,10 +5,8 @@
 
 #include <packs/mp.fxh/math/safesign.fxh>
 #include <packs/mp.fxh/math/mod.fxh>
+#include <packs/mp.fxh/math/const.fxh>
 
-#if !defined(PI)
-#define PI 3.14159265
-#endif
 // simple operations
 float U(float a, float b) {return min(a,b);}
 float S(float a, float b) {return max(a,-b);}

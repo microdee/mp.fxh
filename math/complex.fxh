@@ -1,8 +1,7 @@
 #if !defined(math_complex_fxh)
 #define math_complex_fxh 1
 
-#define PI 3.14159265
-#define EE 2.71828183
+#include <packs/mp.fxh/math/const.fxh>
 
 struct complex {
 	float R;

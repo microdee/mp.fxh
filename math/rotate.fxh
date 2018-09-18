@@ -1,9 +1,7 @@
 #if !defined(math_rotate_fxh)
 #define math_rotate_fxh
 
-#if !defined(PI)
-#define PI 3.14159265359
-#endif
+#include <packs/mp.fxh/math/const.fxh>
 
 float2 VRotate(float2 orig, float cy)
 {

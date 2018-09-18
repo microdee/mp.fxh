@@ -5,13 +5,8 @@
 
 #include <packs/mp.fxh/math/pows.fxh>
 #include <packs/mp.fxh/math/minmax.fxh>
+#include <packs/mp.fxh/math/const.fxh>
 
-#if !defined(PI)
-#define PI 3.14159265
-#endif
-#if !defined(PHI)
-#define PHI (sqrt(5)*0.5 + 0.5)
-#endif
 // utilities
 float dot2( float3 v ) { return dot(v,v); }
 float lengthn(float2 v, float n) {return pow((pow(abs(v.x),n)+pow(abs(v.y),n)),1/n);}

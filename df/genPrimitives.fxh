@@ -3,9 +3,7 @@
 
 // from http://mercury.sexy/hg_sdf/
 
-#if !defined(PHI)
-#define PHI (sqrt(5)*0.5 + 0.5)
-#endif
+#include <packs/mp.fxh/math/const.fxh>
 
 const float3 GDFVectors[19] : IMMUTABLE = {
 	normalize(float3(1, 0, 0)),

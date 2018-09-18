@@ -3,10 +3,8 @@
 
 #include <packs/mp.fxh/math/copySign.fxh>
 #include <packs/mp.fxh/math/pows.fxh>
+#include <packs/mp.fxh/math/const.fxh>
 
-#if !defined(PI)
-#define PI 3.1415926535897932
-#endif
 float4 qmul(float4 q1, float4 q2)
 {
 	return float4(
