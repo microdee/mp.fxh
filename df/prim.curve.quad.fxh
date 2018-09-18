@@ -1,32 +1,34 @@
 #if !defined(df_curve_quad_fxh)
 #define df_curve_quad_fxh 1
 
+#include <packs/mp.fxh/math/const.fxh>
+#include <packs/mp.fxh/df/operands.fxh>
+
 float det( float2 a, float2 b ) { return a.x*b.y-b.x*a.y; }
 float3 QuadCurveClosestPoint( float2 b0, float2 b1, float2 b2 ) 
 {
-	
-  float a =     det(b0,b2);
-  float b = 2.0*det(b1,b0);
-  float d = 2.0*det(b2,b1);
-  float f = b*d - a*a;
-  float2  d21 = b2-b1;
-  float2  d10 = b1-b0;
-  float2  d20 = b2-b0;
-  float2  gf = 2.0*(b*d21+d*d10+a*d20); gf = float2(gf.y,-gf.x);
-  float2  pp = -f*gf/dot(gf,gf);
-  float2  d0p = b0-pp;
-  float ap = det(d0p,d20);
-  float bp = 2.0*det(d10,d0p);
-  float t = clamp( (ap+bp)/(2.0*a+b+d), 0.0 ,1.0 );
-  return float3( lerp(lerp(b0,b1,t), lerp(b1,b2,t),t), t );
+    float a =     det(b0,b2);
+    float b = 2.0*det(b1,b0);
+    float d = 2.0*det(b2,b1);
+    float f = b*d - a*a;
+    float2  d21 = b2-b1;
+    float2  d10 = b1-b0;
+    float2  d20 = b2-b0;
+    float2  gf = 2.0*(b*d21+d*d10+a*d20); gf = float2(gf.y,-gf.x);
+    float2  pp = -f*gf/dot(gf,gf);
+    float2  d0p = b0-pp;
+    float ap = det(d0p,d20);
+    float bp = 2.0*det(d10,d0p);
+    float t = clamp( (ap+bp)/(2.0*a+b+d), 0.0 ,1.0 );
+    return float3( lerp(lerp(b0,b1,t), lerp(b1,b2,t),t), t );
 }
 
 /*
     distance from quadratic bezier curve center
         A, B, C: control points
         pos: position in field
-        return.x: progress on curve
-        return.y: distance from curve
+        return.x: distance from curve
+        return.y: progress on curve
 */
 #if defined(CURVE_QUAD_EXACT) /// -type Switch -pin "-name UseExactQuadraticCurve -visibility Hidden"
 
@@ -107,6 +109,36 @@ float2 pQuadCurve(float3 pos, float3 A, float3 B, float3 C)
 	return float2( sqrt(dot(cp.xy,cp.xy)+p3.z*p3.z), cp.z );
 }
 #endif // CURVE_QUAD_EXACT
+
+/*
+    Construct complex curves with array of quadratic curves
+        pos: position
+        segments: list of connected vertices
+        segcnt: vertex count
+        r: spline radius
+        k: connection smoothness
+        return.x: distance
+        return.y: segment progress
+        return.z: segment id
+*/
+
+float3 pQuadCurve(float3 pos, StructuredBuffer<float3> segments, uint segcnt, float r, float k)
+{
+    float3 res = float3(FLOAT_MAX, 0, -1);
+    for(uint i=1; i<segcnt-1; i+= 2)
+    {
+        float3 seg0 = segments[i-1];
+        float3 seg1 = segments[i];
+        float3 seg2 = segments[i+1];
+        float2 d = pQuadCurve(pos, seg0, seg1, seg2);
+        res.x = sU(res.x, d.x-r, k);
+        if(d.x < res.x)
+        {
+            res = float3(d, i);
+        }
+    }
+    return res;
+}
 
 // Test if point p crosses line (a, b), returns sign of result
 float testCross(float2 a, float2 b, float2 p) {
