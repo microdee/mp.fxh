@@ -60,7 +60,7 @@ interface iDF
 };
 
 // calculate normals
-float3 DFNormals(float3 p, float width, iDF idf DF_ARGS_DEF)
+float3 dfNormals(float3 p, float width, iDF idf DF_ARGS_DEF)
 {
 	float3 grad;
 	grad.x = idf.df(p + float3( width, 0, 0) DF_ARGS_PASS)DF_GETDISTANCE -
@@ -72,7 +72,7 @@ float3 DFNormals(float3 p, float width, iDF idf DF_ARGS_DEF)
 	return normalize(grad);
 };
 
-float DFAO(float3 p, float3 norm, float stepsize, float strength, iDF idf DF_ARGS_DEF) {
+float dfAO(float3 p, float3 norm, float stepsize, float strength, iDF idf DF_ARGS_DEF) {
     float stp = stepsize;
     float ao = 0.0;
     float dist;
@@ -83,11 +83,11 @@ float DFAO(float3 p, float3 norm, float stepsize, float strength, iDF idf DF_ARG
     return saturate(1-ao*strength);
 }
 
-float NaiveEdge( float3 p, float3 norm, float ew, float nw, iDF idf DF_ARGS_DEF)
+float dfNaiveEdge( float3 p, float3 norm, float ew, float nw, iDF idf DF_ARGS_DEF)
 {
-	float3 nx = DFNormals(p + float3(ew, 0, 0), nw, idf DF_ARGS_PASS);
-	float3 ny = DFNormals(p + float3(0, ew, 0), nw, idf DF_ARGS_PASS);
-	float3 nz = DFNormals(p + float3(0, 0, ew), nw, idf DF_ARGS_PASS);
+	float3 nx = dfNormals(p + float3(ew, 0, 0), nw, idf DF_ARGS_PASS);
+	float3 ny = dfNormals(p + float3(0, ew, 0), nw, idf DF_ARGS_PASS);
+	float3 nz = dfNormals(p + float3(0, 0, ew), nw, idf DF_ARGS_PASS);
 	float e = -(dot(nx, norm)-1)-(dot(ny, norm)-1)-(dot(nz, norm)-1);
 	return saturate(abs(e));
 }

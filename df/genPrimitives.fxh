@@ -7,7 +7,7 @@
 #define PHI (sqrt(5)*0.5 + 0.5)
 #endif
 
-const float3 GDFVectors[19] = {
+const float3 GDFVectors[19] : IMMUTABLE = {
 	normalize(float3(1, 0, 0)),
 	normalize(float3(0, 1, 0)),
 	normalize(float3(0, 0, 1)),

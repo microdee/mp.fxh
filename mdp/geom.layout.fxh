@@ -69,4 +69,5 @@ struct GSin
 #if defined(INSTANCEID_IN) || defined(REAL_INSTANCEID)
 #define INSTANCED 1
 #endif
+
 #endif
