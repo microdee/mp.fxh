@@ -33,12 +33,15 @@ struct MDP_VSIN
     float4 Bin : BINORMAL;
     #endif
 
+    /*
+        Geometry has previous position per-vertex
+    */
     #if defined(HAS_PREVPOS) /// -type switch -pin "-visibility hidden"
     float3 ppos : PREVPOS;
     #endif
-
+    
     /*
-        Geometry has previous position per-vertex
+        Geometry has Subset ID indicator on vertices
     */
     #if defined(HAS_SUBSETID) /// -type switch -pin "-visibility hidden"
     uint ssid : SUBSETID;

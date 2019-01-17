@@ -1,5 +1,5 @@
-#if !defined(df_df_disney_boilerplate_fxh)
-#define df_df_disney_boilerplate_fxh
+#if !defined(df_disney_boilerplate_fxh)
+#define df_disney_boilerplate_fxh
 
 struct MatData
 {
@@ -73,7 +73,7 @@ struct LitResult
 #define DF_MARCH_SETHIT(V, H) V.hit = (H)
 #define DF_MARCH_SETITER(V, I) V.iter = (I)
 
-#include <packs/mp.fxh/df/df.raymarch.fxh>
+#include <packs/mp.fxh/df/raymarch.fxh>
 
 #define BRDF_ARGSDEF , MatData mat
 #define BRDF_ARGSPASS , mat
@@ -93,6 +93,7 @@ struct LitResult
 #include <packs/mp.fxh/brdf/brdf.fxh>
 #include <packs/mp.fxh/math/quaternion.fxh>
 #include <packs/mp.fxh/math/vectors.fxh>
+#include <packs/mp.fxh/math/noise.fxh>
 
 StructuredBuffer<PointLight> PointLights : POINTLIGHTS;
 float PointCount : POINTLIGHTCOUNT;
@@ -119,9 +120,13 @@ cbuffer cbPerDraw : register( b1 )
     float4x4 tVPI : VIEWPROJECTIONINVERSE;
     float4x4 ptV : PREVIOUSVIEW;
     float4x4 ptP : PREVIOUSPROJECTION;
-    float3 campos : CAMERAPOSITION;
-	float3 SunDir = float3(1,1,0);
+    float4x4 ptVP : PREVIOUSVIEWPROJECTION;
+    float4x4 ptVPI : PREVIOUSVIEWPROJECTIONINVERSE;
 	float4 SunColor <bool color=true;> = 1;
+    float3 campos : CAMERAPOSITION;
+    float2 TargetSize : TARGETSIZE;
+    float MbSeed;
+	float3 SunDir = float3(1,1,0);
 	float VelAm <string uiname="Velocity Amount";> = 1;
 }
 
@@ -182,15 +187,9 @@ PSin VSThru(VSin i)
     return o;
 }
 
-LitResult RaymarchDisney(PSin i, float maxdist, iDF idf DF_ARGS_DEF)
+float3 DisneyColor(marchResult mres, iDF idf DF_ARGS_DEF)
 {
-    float4 ro = mul(i.pos, tVPI);
-    ro /= ro.w;
-    float4 re = mul(i.pos + float4(0, 0, 1, 0), tVPI);
-    re /= re.w;
-    float3 rd = normalize(re.xyz - ro.xyz);
-    marchResult mres = dfMarch(ro.xyz, rd, maxdist, idf DF_ARGS_PASS);
-    float3 norm = dfNormals(mres.p, 0.01, idf DF_ARGS_PASS);
+    float3 norm = dfNormals(mres.p, 0.01, idf, mbcoeff);
 
     float ndotu = dot(norm, float3(0,1,0));
     float3 uv = smoothstep(float3(0,1,0), float3(1,0,0), saturate((ndotu-0.9) * 10));
@@ -226,7 +225,36 @@ LitResult RaymarchDisney(PSin i, float maxdist, iDF idf DF_ARGS_DEF)
 		}
 	}
 
-    outcol *= dfAO(mres.p, norm, 0.1, 0.4, idf DF_ARGS_PASS);
+    outcol *= dfAO(mres.p, norm, 0.1, 0.35, idf, mbcoeff);
+    return outcol;
+}
+
+marchResult DisneyMarch(PSin i, float maxdist, iDF idf DF_ARGS_DEF)
+{
+    float4 ro = mul(i.pos, tVPI);
+    ro /= ro.w;
+    float4 re = mul(i.pos + float4(0, 0, 1, 0), tVPI);
+    re /= re.w;
+    float3 rd = normalize(re.xyz - ro.xyz);
+    
+    float4 pro = mul(i.pos, ptVPI);
+    pro /= pro.w;
+    float4 pre = mul(i.pos + float4(0, 0, 1, 0), ptVPI);
+    pre /= pre.w;
+    float3 prd = normalize(pre.xyz - pro.xyz);
+
+    float3 cro = lerp(ro.xyz, pro.xyz, mbcoeff);
+    float3 crd = lerp(rd, prd, mbcoeff);
+
+    return dfMarch(cro.xyz, crd, maxdist, idf, mbcoeff);
+}
+
+LitResult RaymarchDisney(PSin i, float maxdist, iDF idf DF_ARGS_DEF)
+{
+    float2 asp = TargetSize / min(TargetSize.x, TargetSize.y);
+    mbcoeff = dnoise(i.pos.xy*asp*100, MbSeed);
+    marchResult mres = DisneyMarch(i, maxdist, idf, mbcoeff);
+    float3 outcol = DisneyColor(mres, idf, mbcoeff);
 
     float4 opos = mul(float4(mres.p, 1), tVP);
     float4 ppos = mul(float4(mres.p, 1), mul(ptV, ptP));

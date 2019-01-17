@@ -12,4 +12,22 @@ float3x3 GuessTangentSpace(float3 n, float3 up)
     return res;
 }
 
+float2 RectToPolar(float2 cart)
+{
+    return float2(atan2(cart.y, cart.x), length(cart));
+}
+float2 PolarToRect(float2 pol)
+{
+    return float2(cos(pol.x)*pol.y, sin(pol.x)*pol.y);
+}
+float3 RectToSphere(float3 cart)
+{
+    float r = length(cart);
+    return float3(atan2(cart.y, cart.x), acos(cart.z/r), r);
+}
+float3 SphereToRect(float3 sph)
+{
+    return float3(sph.z*cos(sph.x)*sin(sph.y), sph.z*sin(sph.x)*sin(sph.y), sph.z*cos(sph.y));
+}
+
 #endif

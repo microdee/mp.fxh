@@ -121,7 +121,6 @@ float2 pQuadCurve(float3 pos, float3 A, float3 B, float3 C)
         return.y: segment progress
         return.z: segment id
 */
-
 float3 pQuadCurve(float3 pos, StructuredBuffer<float3> segments, uint segcnt, float r, float k)
 {
     float3 res = float3(FLOAT_MAX, 0, -1);
@@ -130,6 +129,23 @@ float3 pQuadCurve(float3 pos, StructuredBuffer<float3> segments, uint segcnt, fl
         float3 seg0 = segments[i-1];
         float3 seg1 = segments[i];
         float3 seg2 = segments[i+1];
+        float2 d = pQuadCurve(pos, seg0, seg1, seg2);
+        res.x = sU(res.x, d.x-r, k);
+        if(d.x < res.x)
+        {
+            res = float3(d, i);
+        }
+    }
+    return res;
+}
+float3 pQuadCurveMb(float3 pos, StructuredBuffer<float3> segments, StructuredBuffer<float3> psegments, uint segcnt, float r, float k, float mbcoeff)
+{
+    float3 res = float3(FLOAT_MAX, 0, -1);
+    for(uint i=1; i<segcnt-1; i+= 2)
+    {
+        float3 seg0 = lerp(segments[i-1], psegments[i-1], mbcoeff);
+        float3 seg1 = lerp(segments[i], psegments[i], mbcoeff);
+        float3 seg2 = lerp(segments[i+1], psegments[i+1], mbcoeff);
         float2 d = pQuadCurve(pos, seg0, seg1, seg2);
         res.x = sU(res.x, d.x-r, k);
         if(d.x < res.x)

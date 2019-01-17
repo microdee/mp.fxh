@@ -34,8 +34,8 @@ float3 cpoint : POSITION;
     float2 TexCd9: TEXCOORD9;
 #endif
 #if defined(TANGENT_IN) /// -type switch -pin "-visibility hidden"
-    float3 Tangent : TANGENT;
-    float3 Binormal : BINORMAL;
+    float4 Tangent : TANGENT;
+    float4 Binormal : BINORMAL;
 #endif
 #if defined(BLENDWEIGHT_IN) /// -type switch -pin "-visibility hidden"
     float4 BlendId : BLENDINDICES;
