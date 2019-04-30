@@ -1,16 +1,13 @@
 #if !defined(math_plasmaNoise_fxh)
 #define math_plasmaNoise_fxh
 
-#define MINTWOPI -6.283185307179586476925286766559
-#define TWOPI 6.283185307179586476925286766559
-
 float Freqs[22] : IMMUTABLE = {17,13,9,23,33,43,5,6,7,93,73,53,43,33,23,53,93,73,13,1,17,8};
 float Amps[5] : IMMUTABLE = {5,6,9,7,2};
 
 float3 lungth(float3 x,float3 c){
        return float3(length(x+c.r),length(x+c.g),length(x+c.b));
 }
-float3 distort(float3 inpos, float4x4 Transform, float saturation, float freq[22], float amp[5])
+float3 plasmaNoise(float3 inpos, float4x4 Transform, float saturation, float freq[22], float amp[5])
 {
     float3 c=0;
     float3 x=mul(float4(inpos,1),Transform).xyz;
@@ -22,5 +19,15 @@ float3 distort(float3 inpos, float4x4 Transform, float saturation, float freq[22
     c=lungth(sin(x*sqrt(float3(freq[18],freq[19],freq[20]))),c/amp[4]);
     c=sin(c*freq[21]);
     return normalize(c);
+}
+
+float3 plasmaNoise(float3 inpos, float4x4 Transform, float saturation)
+{
+    return plasmaNoise(inpos, Transform, saturation, Freqs, Amps);
+}
+
+float3 distort(float3 inpos, float4x4 Transform, float saturation, float freq[22], float amp[5])
+{
+    return plasmaNoise(inpos, Transform, saturation, freq, amp);
 }
 #endif

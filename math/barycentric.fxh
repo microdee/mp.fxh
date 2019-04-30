@@ -6,30 +6,7 @@
         input[3]: actual values
         uv: the barycentric coords
 */
-float BcBlend(float input[3] , float3 uv)
-{
-    return uv.x * input[0]
-        + uv.y * input[1]
-        + uv.z * input[2];
-}
-float2 BcBlend(float2 input[3] , float3 uv)
-{
-    return uv.x * input[0]
-        + uv.y * input[1]
-        + uv.z * input[2];
-}
-float3 BcBlend(float3 input[3] , float3 uv)
-{
-    return uv.x * input[0]
-        + uv.y * input[1]
-        + uv.z * input[2];
-}
-float4 BcBlend(float4 input[3] , float3 uv)
-{
-    return uv.x * input[0]
-        + uv.y * input[1]
-        + uv.z * input[2];
-}
+#define BcBlend(verts, uv) (uv.x * verts[0] + uv.y * verts[1] + uv.z * verts[2])
 
 /*
     Find barycentric coordinates in a triangle from a point

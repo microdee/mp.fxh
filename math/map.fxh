@@ -1,24 +1,12 @@
 #if !defined(math_map_fxh)
 #define math_map_fxh
 
-float map(float sb, float st, float db, float dt, float l)
-{
-	float ll = (l-sb) / (st-sb);
-	return lerp(db, dt, l);
-}
-float2 map(float2 sb, float2 st, float2 db, float2 dt, float2 l)
-{
-	float2 ll = (l-sb) / (st-sb);
-	return lerp(db, dt, l);
-}
-float3 map(float3 sb, float3 st, float3 db, float3 dt, float3 l)
-{
-	float3 ll = (l-sb) / (st-sb);
-	return lerp(db, dt, l);
-}
-float4 map(float4 sb, float4 st, float4 db, float4 dt, float4 l)
-{
-	float4 ll = (l-sb) / (st-sb);
-	return lerp(db, dt, l);
-}
+#define map(l, smin, smax, dmin, dmax) (dmin + ((l - smin) / (smax - smin)) * (dmax - dmin))
+
+#define mapClamp(l, smin, smax, dmin, dmax) map(clamp(l, min(smin, smax), max(smin, smax)), smin, smax, dmin, dmax)
+
+#define mapWrap(l, smin, smax, dmin, dmax) (dmin + ((((l - smin) / (smax - smin)) + ((l - smin) / (smax - smin)) < 0) % 1) * (dmax - dmin))
+	
+#define mapMirror(l, smin, smax, dmin, dmax) (dmin + ((1-2*abs(frac((l - smin) / (smax - smin) * 0.5) - 0.5)) % 1) * (dmax - dmin))
+
 #endif
