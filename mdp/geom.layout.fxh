@@ -5,7 +5,7 @@
 	Geometry IO for md.pipeline
 */
 
-#if !defined(TEXCOORDCOUNT) /// -type int
+#if !defined(TEXCOORDCOUNT) /// -type int -pin "-visibility OnlyInspector"
 #define TEXCOORDCOUNT 0
 #endif
 
@@ -48,6 +48,20 @@
 #if TEXCOORDCOUNT > 9
 #define TEXCOORD9_IN 1
 #define HAS_TEXCOORD9 1
+#endif
+
+/*
+    Name for VS input struct
+*/
+#if !defined(MDL_VSIN)
+#define MDL_VSIN VSin
+#endif
+
+/*
+    Name for GS input struct
+*/
+#if !defined(MDL_GSIN)
+#define MDL_GSIN GSin
 #endif
 
 struct VSin
