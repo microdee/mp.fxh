@@ -12,6 +12,13 @@ float3x3 GuessTangentSpace(float3 n, float3 up)
     return res;
 }
 
+float3x3 GuessTangentSpace(float3 n)
+{
+    float ndotu = dot(n, float3(0,1,0));
+    float3 uv = smoothstep(float3(0,1,0), float3(1,0,0), saturate((ndotu-0.9) * 10));
+    return GuessTangentSpace(n, uv);
+}
+
 float2 RectToPolar(float2 cart)
 {
     return float2(atan2(cart.y, cart.x), length(cart));
