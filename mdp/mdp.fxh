@@ -2,18 +2,20 @@
 #define mdp_mdp_fxh
 
 /*
-	this fxh provides common VS, GS and tessellation for rendering triangular geometry with your own PS.
+	this fxh provides common VS, GS and tessellation for rendering triangular geometry with your own PS or GeomFX.
+	define MDP_GEOMFX to use this fxh for streamout shaders and GeomFX nodes.
 */
 
 // see structs and common global variables defines here:
 #include <packs/mp.fxh/mdp/structs.fxh>
-
+#include <packs/mp.fxh/math/vectors.fxh>
 #include <packs/mp.fxh/texture/displaceNormal.fxh>
+#include <packs/mp.fxh/math/const.fxh>
 
 /*
 	The main TEXCOORD which is used for the main texture input
 */
-#if !defined(MDP_MAINUVLAYER) /// -type token
+#if !defined(MDP_MAINUVLAYER) /// -type token -pin "-visibility Hidden"
 #define MDP_MAINUVLAYER TEXCOORD0
 #endif
 
@@ -23,7 +25,7 @@
 
 VSOUTPUTTYPE MDP_VS(MDP_VSIN input)
 {
-	VSOUTPUTTYPE output;
+	VSOUTPUTTYPE output = (VSOUTPUTTYPE)0;
 
 	uint ssid = 0;
 	uint mid = 0;
@@ -58,16 +60,16 @@ VSOUTPUTTYPE MDP_VS(MDP_VSIN input)
 	    float2 puv = 0;
 	#endif
 
-	float4x4 w = float4x4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+	float4x4 w = UNIT_MATRIX;
 	#if defined(USE_SUBSETTRANSFORMS) && !defined(IGNORE_BUFFERS) /// -type switch
-		w = mul(Tr[ssid], w);
+		w = Tr[ssid];
 	#endif
 	#if defined(HAS_INSTANCEID) || defined(USE_SVINSTANCEID)
 		w = mul(w, iTr[iid]);
 	#endif
 	w = mul(w, tW);
 
-	float4x4 pw = float4x4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+	float4x4 pw = UNIT_MATRIX;
 	#if defined(USE_SUBSETTRANSFORMS) && !defined(IGNORE_BUFFERS)
 		pw = mul(pw, pTr[ssid]);
 	#endif
@@ -82,14 +84,14 @@ VSOUTPUTTYPE MDP_VS(MDP_VSIN input)
 			output.Norm *= -1;
 		#endif
 
-		output.Pos = mul(float4(input.Pos,1), w);
+		output.Pos = mul(float4(input.Pos,1), w).xyz;
 
 	    #if defined(HAS_TANGENT)
 			float4 intan = input.Tan;
 			float4 inbin = input.Bin;
 		    output.Tan = normalize(mul(float4(input.Tan.xyz,0), w).xyz);
 		    output.Bin = normalize(mul(float4(input.Bin.xyz,0), w).xyz);
-			#if defined(HAS_TANGENT_WINDING) /// -type switch -pin "-visibility hidden"
+			#if defined(HAS_TANGENT_WINDING) /// -type switch -pin "-visibility OnlyInspector"
 			    output.Tan *= -intan.w;
 			    output.Bin *= -inbin.w;
 		    #endif
@@ -98,8 +100,9 @@ VSOUTPUTTYPE MDP_VS(MDP_VSIN input)
 				output.Bin *= -1;
 			#endif
 		#else
-		    output.Tan = normalize(mul(float4(1,0,0,0), w).xyz);
-		    output.Bin = normalize(mul(float4(0,1,0,0), w).xyz);
+			float3x3 guessedTanSpace = GuessTangentSpace(input.Norm);
+		    output.Tan = normalize(mul(float4(guessedTanSpace[0],0), w).xyz);
+		    output.Bin = normalize(mul(float4(guessedTanSpace[1],0), w).xyz);
 		#endif
 
 	    float3 pp = input.Pos;
@@ -107,13 +110,18 @@ VSOUTPUTTYPE MDP_VS(MDP_VSIN input)
 	    	pp = input.ppos;
 	    #endif
 
-		output.ppos = mul(float4(pp,1), pw);
+		output.ppos = mul(float4(pp,1), pw).xyz;
 	    #if defined(HAS_TANGENT)
-		    output.ppos.xyz += output.Tan * (output.UV.x-puv.x);
-		    output.ppos.xyz += output.Bin * (output.UV.y-puv.y);
+		    output.ppos += output.Tan * (output.UV.x-puv.x);
+		    output.ppos += output.Bin * (output.UV.y-puv.y);
 		#endif
 	#else
-    	float4x4 tWV = mul(w, tV);
+		#if defined(MDP_GEOMFX)
+    		float4x4 tWV = w;
+		#else
+    		float4x4 tWV = mul(w, tV);
+		#endif
+
 		output.Norm = normalize(mul(float4(input.Norm,0), tWV).xyz);
 		#if defined(INV_NORMALS)
 			output.Norm *= -1;
@@ -123,11 +131,15 @@ VSOUTPUTTYPE MDP_VS(MDP_VSIN input)
 			disp = DispMap.SampleLevel(sT, output.UV, 0).rg;
 		
 		float3 posi = input.Pos + disp.r * input.Norm * Displace.x;
-		output.svpos = mul(float4(posi,1), w);
-	    output.posw = output.svpos.xyz;
-		output.svpos = mul(output.svpos, tV);
-		output.svpos = mul(output.svpos, tP);
-		output.pspos = output.svpos;
+		#if defined(MDP_GEOMFX)
+			output.Pos = mul(float4(posi,1), w).xyz;
+		#else
+			output.svpos = mul(float4(posi,1), w);
+			output.posw = output.svpos.xyz;
+			output.svpos = mul(output.svpos, tV);
+			output.svpos = mul(output.svpos, tP);
+			output.pspos = output.svpos;
+		#endif
 
 	    #if defined(HAS_TANGENT)
 			float4 intan = input.Tan;
@@ -148,8 +160,9 @@ VSOUTPUTTYPE MDP_VS(MDP_VSIN input)
 				output.Bin *= -1;
 			#endif
 		#else
-		    output.Tan = normalize(mul(float4(1,0,0,0), tWV).xyz);
-		    output.Bin = normalize(mul(float4(0,1,0,0), tWV).xyz);
+			float3x3 guessedTanSpace = GuessTangentSpace(input.Norm);
+		    output.Tan = normalize(mul(float4(guessedTanSpace[0],0), tWV).xyz);
+		    output.Bin = normalize(mul(float4(guessedTanSpace[1],0), tWV).xyz);
 		#endif
 		if(Displace.x > 0.0001)
 		{
@@ -171,10 +184,17 @@ VSOUTPUTTYPE MDP_VS(MDP_VSIN input)
 
 		output.ppos = mul(float4(pp,1), pw);
 		output.ppos = mul(output.ppos, ptV);
+
 	    #if defined(HAS_TANGENT)
+		#if defined(MDP_GEOMFX)
+		    output.ppos += output.Tan * (output.UV.x-puv.x);
+		    output.ppos += output.Bin * (output.UV.y-puv.y);
+		#else
 		    output.ppos.xyz += output.Tan * (output.UV.x-puv.x);
 		    output.ppos.xyz += output.Bin * (output.UV.y-puv.y);
 		#endif
+		#endif
+
 		output.ppos = mul(output.ppos, ptP);
 	#endif
 	
@@ -188,10 +208,9 @@ VSOUTPUTTYPE MDP_VS(MDP_VSIN input)
 }
 
 [maxvertexcount(3)]
-void MDP_GS(triangle MDP_PSIN input[3], inout TriangleStream<MDP_PSIN> gsout)
+void MDP_GS(triangle GSOUTPUTTYPE input[3], inout TriangleStream<GSOUTPUTTYPE> gsout)
 {
-    
-	MDP_PSIN o = (MDP_PSIN)0;
+	GSOUTPUTTYPE o = (GSOUTPUTTYPE)0;
 
 	/*
 		MDP_GS_PERPRIMITIVE_PRE is for custom GS preparation
@@ -200,8 +219,13 @@ void MDP_GS(triangle MDP_PSIN input[3], inout TriangleStream<MDP_PSIN> gsout)
 	MDP_GS_PERPRIMITIVE_PRE
 	#endif
 
+	#if defined(MDP_GEOMFX)
+	float3 f1 = input[1].Pos - input[0].Pos;
+    float3 f2 = input[2].Pos - input[0].Pos;
+	#else
 	float3 f1 = input[1].posw.xyz - input[0].posw.xyz;
     float3 f2 = input[2].posw.xyz - input[0].posw.xyz;
+	#endif
 
 	float3 norm = 0;
 	
@@ -210,20 +234,26 @@ void MDP_GS(triangle MDP_PSIN input[3], inout TriangleStream<MDP_PSIN> gsout)
 	*/
 	#if defined(FLATNORMALS) /// -type switch
 		norm = normalize(cross(f1, f2));
-		norm = mul(float4(norm, 0), tV).xyz;
+
+		#if !defined(MDP_GEOMFX)
+			norm = mul(float4(norm, 0), tV).xyz;
+		#endif
 	#endif
 
 	/*
 		if tangents are not present calculate them based on triangle UV's
 	*/
-	#if !defined(HAS_TANGENT)
+	#if !defined(HAS_TANGENT) && defined(HAS_TEXCOORD0)
 		float2 uU = input[1].UV - input[0].UV;
 	    float2 uV = input[2].UV - input[0].UV;
 		float2x3 ts1 = (1/(uU.x*uV.y - uU.y*uV.x)) * mul(float2x2(uV.y, -uU.y, -uV.x, uU.x), float2x3(f1, f2));
 		float3 tangent = ts1[0];
 		float area = determinant(float2x2(uV, uU));
 		tangent = area < 0 ? -tangent : tangent;
-		tangent = mul(float4(tangent,0), tV).xyz;
+
+		#if !defined(MDP_GEOMFX)
+			tangent = mul(float4(tangent,0), tV).xyz;
+		#endif
 		#if defined(INV_NORMALS)
 			tangent *= -1;
 		#endif
@@ -251,7 +281,7 @@ void MDP_GS(triangle MDP_PSIN input[3], inout TriangleStream<MDP_PSIN> gsout)
 		#else
 			o.Norm = input[i].Norm;
 		#endif
-		#if !defined(HAS_TANGENT)
+		#if !defined(HAS_TANGENT) && defined(HAS_TEXCOORD0)
 			o.Tan = normalize(tangent);
 			o.Bin = cross(o.Tan, o.Norm);
 		#endif

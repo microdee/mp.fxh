@@ -28,6 +28,13 @@
 #endif
 
 /*
+    Name for GS input struct in GeomFX mode
+*/
+#if !defined(MDP_GEOMFX_GSIN)
+#define MDP_GEOMFX_GSIN GeomfxGSIn
+#endif
+
+/*
     Name of VS func
 */
 #if !defined(MDP_VS)

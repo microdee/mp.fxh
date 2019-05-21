@@ -7,6 +7,13 @@
 
 #include <packs/mp.fxh/mdp/defines.fxh>
 #include <packs/mp.fxh/texture/displaceNormal.fxh>
+#include <packs/mp.fxh/math/const.fxh>
+
+#if defined(MDP_GEOMFX)
+#define DSOUTPUTTYPE MDP_GEOMFX_GSIN
+#else
+#define DSOUTPUTTYPE MDP_PSIN
+#endif
 
 struct MDP_HSCONST
 {
@@ -26,7 +33,7 @@ struct MDP_HSCONST
 
 struct MDP_HDSIN
 {
-    float4 Pos : POSITION;
+    float3 Pos : POSITION;
     float3 Norm : NORMAL;
 
     float2 UV : TEXCOORD0;
@@ -37,7 +44,7 @@ struct MDP_HDSIN
     float3 Tan : TANGENT;
     float3 Bin : BINORMAL;
 
-    float4 ppos : PREVPOS;
+    float3 ppos : PREVPOS;
     float sid : SUBSETID;
     float mid : MATID;
     float iid : INSTID;
@@ -140,9 +147,10 @@ MDP_HDSIN MDP_HS( InputPatch<MDP_HDSIN, 3> I, uint uCPID : SV_OutputControlPoint
 }
 
 [domain("tri")]
-MDP_PSIN DS( MDP_HSCONST HSConstantData, const OutputPatch<MDP_HDSIN, 3> I, float3 f3BarycentricCoords : SV_DomainLocation )
+DSOUTPUTTYPE DS( MDP_HSCONST HSConstantData, const OutputPatch<MDP_HDSIN, 3> I, float3 f3BarycentricCoords : SV_DomainLocation )
 {
-	MDP_PSIN output;
+	DSOUTPUTTYPE output = (DSOUTPUTTYPE)0;
+    
     output.sid = I[0].sid;
 	output.mid = I[0].mid;
 	output.iid = I[0].iid;
@@ -163,14 +171,14 @@ MDP_PSIN DS( MDP_HSCONST HSConstantData, const OutputPatch<MDP_HDSIN, 3> I, floa
 	
 	float3 f3Position = InterpolatePos(
         HSConstantData,
-        I[0].Pos.xyz, I[1].Pos.xyz, I[2].Pos.xyz,
+        I[0].Pos, I[1].Pos, I[2].Pos,
         fUVW2, fUVW, CurveAmount,
         cPos, fPos
     );
     float3 pcPos, pfPos;
     float3 pf3Position = InterpolatePos(
         HSConstantData,
-        I[0].ppos.xyz, I[1].ppos.xyz, I[2].ppos.xyz,
+        I[0].ppos, I[1].ppos, I[2].ppos,
         fUVW2, fUVW, PrevCurveAmount,
     	pcPos, pfPos
     );
@@ -179,9 +187,20 @@ MDP_PSIN DS( MDP_HSCONST HSConstantData, const OutputPatch<MDP_HDSIN, 3> I, floa
 		disp = DispMap.SampleLevel(sT, output.UV, 0).rg;
 	float3 posi = f3Position + disp.r * f3Normal * Displace.x;
 	float3 posflat = fPos + disp.r * f3Normal * Displace.x;
-    output.posw = posi;
-	output.svpos = mul(float4(posi,1), tVP);
-	output.pspos = mul(float4(posflat,1), tVP);
+
+    #if defined(MDP_GEOMFX)
+        float4x4 tvp = UNIT_MATRIX;
+        float4x4 tv = UNIT_MATRIX;
+
+        output.Pos = posi;
+    #else
+        float4x4 tvp = tVP;
+        float4x4 tv = tV;
+
+        output.posw = posi;
+        output.svpos = mul(float4(posi,1), tvp);
+        output.pspos = mul(float4(posflat,1), tvp);
+    #endif
 
     float3 f3Tangent = InterpolateDir(
         HSConstantData,
@@ -202,15 +221,20 @@ MDP_PSIN DS( MDP_HSCONST HSConstantData, const OutputPatch<MDP_HDSIN, 3> I, floa
 	if(abs(Displace.x) > 0.0001)
 		nt = SampleDisplaceNormalTangents(nt, DispMap, sT, output.UV, 0.01, Displace.x * DisplaceNormalInfluence, 0);
 	
-	output.Norm = normalize(mul(float4(nt.n,0), tV).xyz);
-    output.Tan = normalize(mul(float4(nt.t,0), tV).xyz);
-    output.Bin = normalize(mul(float4(nt.b,0), tV).xyz);
+	output.Norm = normalize(mul(float4(nt.n,0), tv).xyz);
+    output.Tan = normalize(mul(float4(nt.t,0), tv).xyz);
+    output.Bin = normalize(mul(float4(nt.b,0), tv).xyz);
 
 	float pdisp = disp.g + (disp.r - disp.g) * DisplaceVelocityGain;
     float3 pp = pfPos + pdisp * f3Normal * Displace.y;
 
-	output.ppos = mul(float4(pp,1), ptV);
-	output.ppos = mul(output.ppos, ptP);
+    
+    #if defined(MDP_GEOMFX)
+        output.ppos = pp;
+    #else
+        output.ppos = mul(float4(pp,1), ptV);
+        output.ppos = mul(output.ppos, ptP);
+    #endif
 
 	return output;
 }

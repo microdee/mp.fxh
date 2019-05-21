@@ -7,8 +7,16 @@
 // Set output type of VS depending on Tessellation turned on
 #if defined(TESSELLATE)
 #define VSOUTPUTTYPE MDP_HDSIN
+#elif defined(MDP_GEOMFX)
+#define VSOUTPUTTYPE MDP_GEOMFX_GSIN
 #else
 #define VSOUTPUTTYPE MDP_PSIN
+#endif
+
+#if defined(MDP_GEOMFX)
+#define GSOUTPUTTYPE MDP_GEOMFX_GSIN
+#else
+#define GSOUTPUTTYPE MDP_PSIN
 #endif
 
 // VS Input
@@ -17,7 +25,7 @@ struct MDP_VSIN
     float3 Pos : POSITION;
     float3 Norm : NORMAL;
 
-	#if defined(HAS_TEXCOORD0) /// -type switch -pin "-visibility hidden"
+	#if defined(HAS_TEXCOORD0) /// -type switch
     float2 UV : MDP_MAINUVLAYER;
 	#endif
   
@@ -43,21 +51,21 @@ struct MDP_VSIN
     /*
         Geometry has Subset ID indicator on vertices
     */
-    #if defined(HAS_SUBSETID) /// -type switch -pin "-visibility hidden"
+    #if defined(HAS_SUBSETID) /// -type switch -pin "-visibility OnlyInspector"
     uint ssid : SUBSETID;
     #endif
     
     /*
         Geometry has Material ID indicator on vertices
     */
-    #if defined(HAS_MATERIALID) /// -type switch -pin "-visibility hidden"
+    #if defined(HAS_MATERIALID) /// -type switch -pin "-visibility OnlyInspector"
     uint mid : MATERIALID;
     #endif
     
     /*
         Geometry has Instance ID indicator on vertices
     */
-    #if defined(HAS_INSTANCEID) && !defined(USE_SVINSTANCEID) /// -type switch -pin "-visibility hidden"
+    #if defined(HAS_INSTANCEID) && !defined(USE_SVINSTANCEID) /// -type switch -pin "-visibility OnlyInspector"
     uint iid : INSTANCEID;
     #endif
     
@@ -82,7 +90,7 @@ struct MDP_PSIN
     float4 svpos : SV_Position;
 	float4 pspos : POSPROJ;
     float3 posw : POSWORLD;
-
+    
     float3 Norm : NORMAL;
     float2 UV : TEXCOORD0;
 
@@ -94,14 +102,33 @@ struct MDP_PSIN
     float3 Bin : BINORMAL;
     float4 ppos : PREVPOS;
 
-    nointerpolation float sid : SUBSETID;
-    nointerpolation float mid : MATID;
-    nointerpolation float iid : INSTID;
+    float sid : SUBSETID;
+    float mid : MATID;
+    float iid : INSTID;
 
     #if defined(MDP_PSIN_EXTRA)
     MDP_PSIN_EXTRA
     #endif
 };
+
+// GS Input in GeomFX mode
+struct MDP_GEOMFX_GSIN
+{
+	float3 Pos : POSITION;
+
+    float3 Norm : NORMAL;
+    float2 UV : TEXCOORD0;
+
+    float3 Tan : TANGENT;
+    float3 Bin : BINORMAL;
+    float3 ppos : PREVPOS;
+
+    float sid : SUBSETID;
+    float mid : MATID;
+    float iid : INSTID;
+};
+
+#define MDP_GEOMFX_STREAMOUT "POSITION.xyz;NORMAL.xyz;TEXCOORD0.xy;TANGENT.xyz;BINORMAL.xyz;PREVPOS.xyz;SUBSETID.x;MATID.x;INSTID.x"
 
 SamplerState sT <string uiname="Textures Sampler";>
 {
