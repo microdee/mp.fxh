@@ -19,4 +19,6 @@
 
 #define PHI (sqrt(5)*0.5 + 0.5)
 
+#define UNIT_MATRIX float4x4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1)
+
 #endif
