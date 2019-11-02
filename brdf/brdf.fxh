@@ -222,6 +222,7 @@ cCookTorrance CookTorrance;
 #define BRDF_PARAM_Disney_sheenTint 0.5
 #define BRDF_PARAM_Disney_clearcoat 0
 #define BRDF_PARAM_Disney_clearcoatGloss 1
+#define BRDF_PARAM_Disney_Emit 0
 #endif
 
 float SchlickFresnel(float u)
@@ -341,7 +342,7 @@ class cDisney : iBrdf
         //res *= saturate(NdotL+0.70);
         res *= pow(saturate(NdotV*4+1), 2);
         res = max(res,0);
-		return res;
+		return res + BRDF_PARAM_Disney_Emit;
 	}
 };
 cDisney Disney;

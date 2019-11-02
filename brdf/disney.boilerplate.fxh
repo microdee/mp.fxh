@@ -4,6 +4,7 @@
 struct MatData /// input struct
 {
 	float4 AlbedoAlpha;
+	float4 Emit;
 	float Rough;
 	float Metal;
 	float Anisotropic;
@@ -35,9 +36,10 @@ struct MatData /// input struct
 #define BRDF_PARAM_Disney_sheenTint mat.SheenTint
 #define BRDF_PARAM_Disney_clearcoat mat.Clearcoat
 #define BRDF_PARAM_Disney_clearcoatGloss mat.CCGloss
+#define BRDF_PARAM_Disney_Emit mat.Emit
 
 #include <packs/mp.fxh/brdf/brdf.fxh>
-#include <packs/mp.fxh/brdf/anisotropicEnvSample.fxh>
+//#include <packs/mp.fxh/brdf/anisotropicEnvSample.fxh>
 #include <packs/mp.fxh/math/quaternion.fxh>
 
 float3 DisneyPoint(float3 lp, float3 pos, float3 vdir, float3 norm, float3 tangent, float3 binorm, float attenstart, float attenend, MatData mat)

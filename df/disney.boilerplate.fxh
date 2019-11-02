@@ -1,21 +1,8 @@
 #if !defined(df_disney_boilerplate_fxh)
 #define df_disney_boilerplate_fxh
 
-struct MatData
-{
-	float4 AlbedoAlpha;
-	float Rough;
-	float Metal;
-	float Anisotropic;
-	float Rotate;
-	float SSS;
-	float Specular;
-	float SpecTint;
-	float Sheen;
-	float SheenTint;
-	float Clearcoat;
-	float CCGloss;
-};
+#include <packs/mp.fxh/brdf/disney.boilerplate.fxh>
+
 struct dfResult
 {
     MatData mat;
@@ -75,22 +62,6 @@ struct LitResult
 
 #include <packs/mp.fxh/df/raymarch.fxh>
 
-#define BRDF_ARGSDEF , MatData mat
-#define BRDF_ARGSPASS , mat
-
-#define BRDF_PARAM_Disney_baseColor mat.AlbedoAlpha.rgb
-#define BRDF_PARAM_Disney_metallic mat.Metal
-#define BRDF_PARAM_Disney_subsurface mat.SSS
-#define BRDF_PARAM_Disney_specular mat.Specular
-#define BRDF_PARAM_Disney_roughness mat.Rough
-#define BRDF_PARAM_Disney_specularTint mat.SpecTint
-#define BRDF_PARAM_Disney_anisotropic mat.Anisotropic
-#define BRDF_PARAM_Disney_sheen mat.Sheen
-#define BRDF_PARAM_Disney_sheenTint mat.SheenTint
-#define BRDF_PARAM_Disney_clearcoat mat.Clearcoat
-#define BRDF_PARAM_Disney_clearcoatGloss mat.CCGloss
-
-#include <packs/mp.fxh/brdf/brdf.fxh>
 #include <packs/mp.fxh/math/quaternion.fxh>
 #include <packs/mp.fxh/math/vectors.fxh>
 #include <packs/mp.fxh/math/noise.fxh>
@@ -212,16 +183,22 @@ float3 DisneyColor(marchResult mres, iDF idf DF_ARGS_DEF)
 	for(float i=0; i<PointCount; i++)
 	{
 		PointLight pl = PointLights[i];
-		float3 ld = pl.Position - mres.p;
-		float d = length(ld);
-		ld = normalize(ld);
+		float d = distance(mres.p, pl.Position);
 		
 		if(d < pl.AttenuationEnd)
 		{
-			float3 light = Disney.brdf(ld, vdir, tanspace[2], tanspace[0], tanspace[1], mres.dfdat.mat);
-			//light *= pow(saturate(dot(wnorm, ld)*2), 2);
-			float attend = pl.AttenuationEnd - pl.AttenuationStart;
-			outcol += light * pl.Color * smoothstep(1, 0, saturate(d/attend-pl.AttenuationStart/attend));
+            float3 light = DisneyPoint(
+                pl.Position,
+                mres.p,
+                vdir,
+                tanspace[2],
+                tanspace[0],
+                tanspace[1],
+                pl.AttenuationStart,
+                pl.AttenuationEnd,
+                mres.dfdat.mat
+            );
+		    outcol += light * pl.Color;
 		}
 	}
 
