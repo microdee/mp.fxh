@@ -52,21 +52,21 @@ struct MDP_VSIN
         Geometry has Subset ID indicator on vertices
     */
     #if defined(HAS_SUBSETID) /// -type switch -pin "-visibility OnlyInspector"
-    uint ssid : SUBSETID;
+    float ssid : SUBSETID;
     #endif
     
     /*
         Geometry has Material ID indicator on vertices
     */
     #if defined(HAS_MATERIALID) /// -type switch -pin "-visibility OnlyInspector"
-    uint mid : MATERIALID;
+    float mid : MATERIALID;
     #endif
     
     /*
         Geometry has Instance ID indicator on vertices
     */
     #if defined(HAS_INSTANCEID) && !defined(USE_SVINSTANCEID) /// -type switch -pin "-visibility OnlyInspector"
-    uint iid : INSTANCEID;
+    float iid : INSTANCEID;
     #endif
     
     /*
