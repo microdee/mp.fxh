@@ -19,6 +19,12 @@ float3x3 GuessTangentSpace(float3 n)
     return GuessTangentSpace(n, uv);
 }
 
+#define EyeDirToTangentSpace(eye, tan, bin, norm) \
+    mul(eye, transpose(float3x3(-tan, bin, norm)))
+
+#define LightDirToTangentSpace(ldir, tan, bin, norm) \
+    mul(-ldir, transpose(float3x3(tan, -bin, norm)))
+
 float2 RectToPolar(float2 cart)
 {
     return float2(atan2(cart.y, cart.x), length(cart));

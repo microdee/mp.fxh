@@ -89,8 +89,8 @@ VSOUTPUTTYPE MDP_VS(MDP_VSIN input)
 	    #if defined(HAS_TANGENT)
 			float4 intan = input.Tan;
 			float4 inbin = input.Bin;
-		    output.Tan = normalize(mul(float4(input.Tan.xyz,0), w).xyz);
-		    output.Bin = normalize(mul(float4(input.Bin.xyz,0), w).xyz);
+		    output.Tan = (mul(float4(input.Tan.xyz,0), w).xyz);
+		    output.Bin = (mul(float4(input.Bin.xyz,0), w).xyz);
 			#if defined(HAS_TANGENT_WINDING) /// -type switch -pin "-visibility OnlyInspector"
 			    output.Tan *= -intan.w;
 			    output.Bin *= -inbin.w;
@@ -101,8 +101,8 @@ VSOUTPUTTYPE MDP_VS(MDP_VSIN input)
 			#endif
 		#else
 			float3x3 guessedTanSpace = GuessTangentSpace(input.Norm);
-		    output.Tan = normalize(mul(float4(guessedTanSpace[0],0), w).xyz);
-		    output.Bin = normalize(mul(float4(guessedTanSpace[1],0), w).xyz);
+		    output.Tan = (mul(float4(guessedTanSpace[0],0), w).xyz);
+		    output.Bin = (mul(float4(guessedTanSpace[1],0), w).xyz);
 		#endif
 
 	    float3 pp = input.Pos;
@@ -136,7 +136,10 @@ VSOUTPUTTYPE MDP_VS(MDP_VSIN input)
 		#else
 			output.svpos = mul(float4(posi,1), w);
 			output.posw = output.svpos.xyz;
+
 			output.svpos = mul(output.svpos, tV);
+			output.posv = output.svpos.xyz;
+			
 			output.svpos = mul(output.svpos, tP);
 			output.pspos = output.svpos;
 		#endif
@@ -149,8 +152,8 @@ VSOUTPUTTYPE MDP_VS(MDP_VSIN input)
 				intan = float4(1,0,0,1);
 				inbin = float4(0,1,0,1);
 			}
-		    output.Tan = normalize(mul(float4(intan.xyz,0), tWV).xyz);
-		    output.Bin = normalize(mul(float4(inbin.xyz,0), tWV).xyz);
+		    output.Tan = (mul(float4(intan.xyz,0), tWV).xyz);
+		    output.Bin = (mul(float4(inbin.xyz,0), tWV).xyz);
 			#if defined(HAS_TANGENT_WINDING)
 			    output.Tan *= -intan.w;
 			    output.Bin *= -inbin.w;
@@ -161,8 +164,8 @@ VSOUTPUTTYPE MDP_VS(MDP_VSIN input)
 			#endif
 		#else
 			float3x3 guessedTanSpace = GuessTangentSpace(input.Norm);
-		    output.Tan = normalize(mul(float4(guessedTanSpace[0],0), tWV).xyz);
-		    output.Bin = normalize(mul(float4(guessedTanSpace[1],0), tWV).xyz);
+		    output.Tan = (mul(float4(guessedTanSpace[0],0), tWV).xyz);
+		    output.Bin = (mul(float4(guessedTanSpace[1],0), tWV).xyz);
 		#endif
 		if(Displace.x > 0.0001)
 		{

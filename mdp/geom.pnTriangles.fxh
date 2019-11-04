@@ -198,6 +198,7 @@ DSOUTPUTTYPE DS( MDP_HSCONST HSConstantData, const OutputPatch<MDP_HDSIN, 3> I, 
         float4x4 tv = tV;
 
         output.posw = posi;
+        output.posv = mul(float4(posi,1), tv);
         output.svpos = mul(float4(posi,1), tvp);
         output.pspos = mul(float4(posflat,1), tvp);
     #endif
@@ -222,8 +223,8 @@ DSOUTPUTTYPE DS( MDP_HSCONST HSConstantData, const OutputPatch<MDP_HDSIN, 3> I, 
 		nt = SampleDisplaceNormalTangents(nt, DispMap, sT, output.UV, 0.01, Displace.x * DisplaceNormalInfluence, 0);
 	
 	output.Norm = normalize(mul(float4(nt.n,0), tv).xyz);
-    output.Tan = normalize(mul(float4(nt.t,0), tv).xyz);
-    output.Bin = normalize(mul(float4(nt.b,0), tv).xyz);
+    output.Tan = (mul(float4(nt.t,0), tv).xyz);
+    output.Bin = (mul(float4(nt.b,0), tv).xyz);
 
 	float pdisp = disp.g + (disp.r - disp.g) * DisplaceVelocityGain;
     float3 pp = pfPos + pdisp * f3Normal * Displace.y;

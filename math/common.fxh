@@ -24,24 +24,7 @@
 
 #define modf(x, y) (x - y * floor(x/y))
 
-float4x4 scale(float3 s)
-{
-    return float4x4(
-        s.x, 0, 0, 0,
-         0, s.y, 0, 0,
-         0, 0, s.z, 0,
-         0, 0, 0, 1
-    );
-}
-
-float4x4 translate(float3 t)
-{
-    return float4x4(
-         0, 0, 0, 0,
-         0, 0, 0, 0,
-         0, 0, 0, 0,
-        t.x, t.y, t.z, 1
-    );
-}
+#define scale(s) float4x4(s.x, 0, 0, 0, 0, s.y, 0, 0, 0, 0, s.z, 0, 0, 0, 0, 1)
+#define translate(t) float4x4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, t.x, t.y, t.z, 1)
 
 #endif

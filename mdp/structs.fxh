@@ -90,6 +90,7 @@ struct MDP_PSIN
     float4 svpos : SV_Position;
 	float4 pspos : POSPROJ;
     float3 posw : POSWORLD;
+    float3 posv : POSVIEW;
     
     float3 Norm : NORMAL;
     float2 UV : TEXCOORD0;
