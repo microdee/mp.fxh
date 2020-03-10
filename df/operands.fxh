@@ -282,6 +282,13 @@ float USoft(float a, float b, float r) {
 float oPipe(float a, float b, float r) {
 	return length(float2(a, b)) - r;
 }
+
+// produces a cylindical pipe that runs along the intersection.
+// No objects remain, only the pipe. This is not a boolean operator.
+float oPipe(float a, float b, float r, float pwr) {
+	return lengthn(float2(a, b), pwr) - r;
+}
+
 // first object gets a v-shaped engraving where it intersect the second
 float oEngrave(float a, float b, float r) {
 	return max(a, (a + r - abs(b))*sqrt(0.5));

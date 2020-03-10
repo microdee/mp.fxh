@@ -24,6 +24,7 @@
 #endif 
 
 #define RESHADE_DEPTH_LINEARIZATION_FAR_PLANE ReShade_GetLinearFarPlane()
+#define __RENDERER__ 0x0B000
 
 #define BUFFER_WIDTH ReShade_ScreenSize.x
 #define BUFFER_RCP_WIDTH (1/ReShade_ScreenSize.x)
@@ -42,8 +43,15 @@ cbuffer glob : register(b3)
 
 // Global textures and samplers
 //Texture2D ReShade_Initial : INITIAL;
-Texture2D ReShade_BackBuffer;
+#if defined(IS_IN_TFX)
+    Texture2D ReShade_BackBuffer : PREVIOUS;
+#else
+    Texture2D ReShade_BackBuffer;
+#endif
+
 Texture2D<float> ReShade_DepthBuffer;
+
+#define ReShade_BackBufferTex ReShade_BackBuffer
     
 SamplerState ReShade_sL <string uiname="Sampler";>
 {
